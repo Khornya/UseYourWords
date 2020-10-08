@@ -14,9 +14,9 @@ import org.springframework.stereotype.Controller;
 import static java.lang.String.format;
 
 @Controller
-public class GameRoomController {
+public class ChatRoomController {
 
-    private static final Logger logger = LoggerFactory.getLogger(GameRoomController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChatRoomController.class);
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 

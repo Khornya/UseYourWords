@@ -1,5 +1,6 @@
 package com.github.khornya.useyourwords.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -10,15 +11,24 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
 
+    @Value(value = "${websocket.destination.prefix.broker}")
+    private String[] brokerDestinationPrefixs;
+
+    @Value(value = "${websocket.destination.prefix.application}")
+    private String[] applicationDestinationPrefixs;
+
+    @Value(value = "${websocket.stomp.endpoint}")
+    private String[] stompEndpoints;
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/chat-room");
-        config.setApplicationDestinationPrefixes("/chat-app");
+        config.enableSimpleBroker(brokerDestinationPrefixs);
+        config.setApplicationDestinationPrefixes(applicationDestinationPrefixs);
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/sock").setAllowedOrigins("*").withSockJS();
+        registry.addEndpoint(stompEndpoints).setAllowedOrigins("*").withSockJS();
     }
 
 }
