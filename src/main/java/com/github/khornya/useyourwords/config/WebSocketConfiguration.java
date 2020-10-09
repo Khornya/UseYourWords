@@ -12,23 +12,23 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
 
     @Value(value = "${websocket.destination.prefix.broker}")
-    private String[] brokerDestinationPrefixs;
+    private String brokerDestinationPrefix;
 
     @Value(value = "${websocket.destination.prefix.application}")
-    private String[] applicationDestinationPrefixs;
+    private String applicationDestinationPrefix;
 
     @Value(value = "${websocket.stomp.endpoint}")
-    private String[] stompEndpoints;
+    private String stompEndpoint;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker(brokerDestinationPrefixs);
-        config.setApplicationDestinationPrefixes(applicationDestinationPrefixs);
+        config.enableSimpleBroker(brokerDestinationPrefix);
+        config.setApplicationDestinationPrefixes(applicationDestinationPrefix);
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint(stompEndpoints).setAllowedOrigins("*").withSockJS();
+        registry.addEndpoint(stompEndpoint).setAllowedOrigins("*").withSockJS();
     }
 
 }
