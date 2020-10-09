@@ -1,167 +1,78 @@
 import * as React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import $ from "jquery";
 import SockJS from "sockjs-client";
-import Stomp from "stompjs";
+import Stomp, { Frame } from "stompjs";
+import WaitingMessage from "./waitingMessage";
+import GameForm from "./gameForm";
+import WaitingRoom from "./waitingRoom";
+import GameRoom from "./gameRoom";
 
 class App extends React.PureComponent {
-  namePage: any;
-  chatPage: any;
-  room: JQuery<HTMLElement>;
-  name: string;
-  waiting: any;
-  roomIdDisplay: any;
-  stompClient: any;
-  currentSubscription: any;
-  topic: any;
-  username: any;
+  private stompClient: Stomp.Client;
+  private stompSubscription: Stomp.Subscription;
 
-  public App() {}
+  state = {
+    isWaitingForConnection: true,
+    isWaitingToPlay: false,
+    isJoining: false,
+    isPlaying: false,
+  };
 
   componentDidMount = () => {
-    this.namePage = document.querySelector("#userJoin");
-    this.chatPage = document.querySelector("#chatPage");
-    this.room = $("#room");
-    this.name = $("#name").val().toString().trim();
-    this.waiting = document.querySelector(".waiting");
-    this.roomIdDisplay = document.querySelector("#room-id-display");
-    this.stompClient = null;
-    this.currentSubscription = null;
-    this.topic = null;
-    this.username = null;
-
-    let socket = new SockJS("/sock");
-    this.stompClient = Stomp.over(socket);
+    this.stompClient = Stomp.over(new SockJS("/sock"));
+    this.stompClient.connect({}, this.onConnected, this.onError);
   };
 
   render = () => {
     return (
-      <div className="App">
-        <div id="userJoin" className="container">
-          <br />
-          <br />
-          <div className="card">
-            <div className="card-body">
-              <h1>My Chat App Example - nulPointerException.com</h1>
-              <a
-                className="btn btn-primary"
-                href="https://nulpointerexception.com/"
-                role="button"
-              >
-                More tutorials at nulPointerException.com
-              </a>
-            </div>
-          </div>
-          <br />
-          <br />
-          <form id="userJoinForm" name="userJoinForm" onSubmit={this.connect}>
-            <div className="form-group">
-              <label htmlFor="name">Enter Name:</label>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                aria-describedby="name"
-                placeholder="Enter name"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="room">Enter Room:</label>
-              <input
-                type="text"
-                className="form-control"
-                id="room"
-                aria-describedby="exampleInputRoom"
-                placeholder="Enter room"
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Submit
-            </button>
-          </form>
+      <div className="app d-flex justify-content-center flex-column">
+        <div className="banner d-flex justify-content-center">
+          <h1>Use Your Words</h1>
         </div>
-
-        <div id="chatPage" className="container d-none">
-          <div className="card">
-            <div className="card-body">
-              <h1>My Chat App Example - nulPointerException.com</h1>
-              <a
-                className="btn btn-primary"
-                href="https://nulpointerexception.com/"
-                role="button"
-              >
-                More tutorials at nulPointerException.com
-              </a>
-            </div>
-          </div>
-          <div className="chat-header">
-            <h2>
-              Chatroom [<span id="room-id-display"></span>]
-            </h2>
-          </div>
-          <div className="waiting">We are waiting to enter the room.</div>
-          <div className="card">
-            <div className="card-body">
-              <ul id="messageArea"></ul>
-            </div>
-          </div>
-          <form id="messagebox" name="messagebox" onSubmit={this.sendMessage}>
-            <div className="form-group">
-              <label htmlFor="message">Enter Message:</label>
-              <input
-                type="text"
-                className="form-control"
-                id="message"
-                aria-describedby="name"
-                placeholder="Enter message to chat ...."
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Send
-            </button>
-          </form>
-        </div>
+        {this.state.isWaitingToPlay && <WaitingRoom />}
+        {this.state.isWaitingForConnection && <WaitingMessage />}
+        {this.state.isJoining && <GameForm stompClient={this.stompClient} />}
+        {this.state.isPlaying && <GameRoom />}
       </div>
     );
   };
 
-  connect = (event: React.FormEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-    let name1 = $("#name").val().toString().trim();
-    this.namePage.classList.add("d-none");
-    this.chatPage.classList.remove("d-none");
-    let socket = new SockJS("/sock");
-    this.stompClient = Stomp.over(socket);
-    this.stompClient.connect({}, this.onConnected, this.onError);
+  private enterRoom = (newGameId?: string) => {
+    let gameId = newGameId;
+    let username = $("#name").val().toString().trim();
+    newGameId = newGameId ? newGameId : "null";
+    // this.topic = `app/join/${newGameId}/${username}`;
+
+    this.stompClient.send(
+      "/app/join/null/Khornya",
+      {} //JSON.stringify({ sender: username, type: "JOIN" })
+    );
+    this.stompClient.send(
+      "app/chat/null/addUser",
+      {},
+      "" //JSON.stringify({ sender: username, type: "JOIN" })
+    );
   };
 
   onConnected = () => {
     console.log("connected");
-    this.enterRoom(Number(this.room.val()));
-    this.waiting.classList.add("d-none");
+    this.setState({
+      isWaitingForConnection: false,
+      isJoining: true,
+    });
+    // this.stompSubscription = this.stompClient.subscribe(
+    //   `/game-room/${gameId}`,
+    //   this.onMessageReceived
+    // );
+    this.enterRoom();
+    return true;
   };
 
-  onError = (error: Error) => {
-    this.waiting.textContent = "uh oh! service unavailable";
-  };
-
-  enterRoom = (newRoomId: number) => {
-    let roomId = newRoomId;
-    this.roomIdDisplay.textContent = roomId.toString();
-    this.topic = `/chat-app/chat/${newRoomId}`;
-
-    this.currentSubscription = this.stompClient.subscribe(
-      `/chat-room/${roomId}`,
-      this.onMessageReceived
-    );
-    let username = $("#name").val().toString().trim();
-    this.stompClient.send(
-      `${this.topic}/addUser`,
-      {},
-      JSON.stringify({ sender: username, type: "JOIN" })
-    );
+  onError = (error: string | Frame) => {
+    console.error("Error while connecting to websocket : ", error);
+    // TODO: display error
+    return true;
   };
 
   sendMessage = (event: React.FormEvent) => {
@@ -169,7 +80,7 @@ class App extends React.PureComponent {
     let messageContent = $("#message").val().toString().trim();
     let username = $("#name").val().toString().trim();
     let newRoomId = parseInt($("#room").val().toString().trim());
-    this.topic = `/chat-app/chat/${newRoomId}`;
+    // this.topic = `/chat-app/chat/${newRoomId}`;
     if (messageContent && this.stompClient) {
       let chatMessage = {
         sender: username,
@@ -177,11 +88,11 @@ class App extends React.PureComponent {
         type: "CHAT",
       };
 
-      this.stompClient.send(
-        `${this.topic}/sendMessage`,
-        {},
-        JSON.stringify(chatMessage)
-      );
+      // this.stompClient.send(
+      //   `${this.topic}/sendMessage`,
+      //   {},
+      //   JSON.stringify(chatMessage)
+      // );
       (document.querySelector("#message") as HTMLInputElement).value = "";
     }
   };
