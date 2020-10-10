@@ -1,5 +1,9 @@
 import * as React from "react";
 
-class GameRoom extends React.PureComponent {}
+interface IGameRoomProps {
+  gameId: string;
+}
+
+class GameRoom extends React.Component<IGameRoomProps> {}
 
 export default GameRoom;
