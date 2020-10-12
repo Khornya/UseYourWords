@@ -3,7 +3,7 @@ package com.github.khornya.useyourwords.model;
 public class Message {
 
     public enum MessageType {
-        CHAT, PLAY, JOIN, LEAVE
+        PLAYER_JOINED, PLAYER_LEFT, GAME_OVER, NEXT_ROUND, JOINED, ERROR
     }
 
     private MessageType messageType;

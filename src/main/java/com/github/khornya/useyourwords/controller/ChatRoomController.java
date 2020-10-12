@@ -20,23 +20,23 @@ public class ChatRoomController {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    @MessageMapping("/chat/{roomId}/sendMessage")
-    public void sendMessage(@DestinationVariable String roomId, @Payload Message chatMessage) {
-        logger.info(roomId+" Chat message received is "+chatMessage.getContent());
-        messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), chatMessage);
-    }
-
-    @MessageMapping("/chat/{roomId}/addUser")
-    public void addUser(@DestinationVariable String roomId, @Payload Message chatMessage,
-                        SimpMessageHeaderAccessor headerAccessor) {
-        String currentRoomId = (String) headerAccessor.getSessionAttributes().put("room_id", roomId);
-        if (currentRoomId != null) {
-            Message leaveMessage = new Message();
-            leaveMessage.setType(Message.MessageType.LEAVE);
-            leaveMessage.setSender(chatMessage.getSender());
-            messagingTemplate.convertAndSend(format("/chat-room/%s", currentRoomId), leaveMessage);
-        }
-        headerAccessor.getSessionAttributes().put("name", chatMessage.getSender());
-        messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), chatMessage);
-    }
+//    @MessageMapping("/chat/{roomId}/sendMessage")
+//    public void sendMessage(@DestinationVariable String roomId, @Payload Message chatMessage) {
+//        logger.info(roomId+" Chat message received is "+chatMessage.getContent());
+//        messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), chatMessage);
+//    }
+//
+//    @MessageMapping("/chat/{roomId}/addUser")
+//    public void addUser(@DestinationVariable String roomId, @Payload Message chatMessage,
+//                        SimpMessageHeaderAccessor headerAccessor) {
+//        String currentRoomId = (String) headerAccessor.getSessionAttributes().put("room_id", roomId);
+//        if (currentRoomId != null) {
+//            Message leaveMessage = new Message();
+//            leaveMessage.setType(Message.MessageType.LEAVE);
+//            leaveMessage.setSender(chatMessage.getSender());
+//            messagingTemplate.convertAndSend(format("/chat-room/%s", currentRoomId), leaveMessage);
+//        }
+//        headerAccessor.getSessionAttributes().put("name", chatMessage.getSender());
+//        messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), chatMessage);
+//    }
 }

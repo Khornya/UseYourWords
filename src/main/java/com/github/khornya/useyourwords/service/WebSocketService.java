@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,17 @@ public class WebSocketService {
 
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
+
+	public void replyToUser(String sessionId, Map<String, Object> playerPayload) {
+        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
+        headerAccessor.setSessionId(sessionId);
+        headerAccessor.setLeaveMutable(true);
+        simpMessagingTemplate.convertAndSendToUser(sessionId, "/queue/reply", playerPayload, headerAccessor.getMessageHeaders());
+    }
+
+    public void sendToRoom(String gameId, Map<String,Object> gameRoomPayload) {
+		simpMessagingTemplate.convertAndSend(String.format("%s/%s",brokerDestinationPrefix, gameId), gameRoomPayload);
+	}
 
 	/**
 	 * send message to path /${applicationDestationPrefix}/${gameId}/${path}, used

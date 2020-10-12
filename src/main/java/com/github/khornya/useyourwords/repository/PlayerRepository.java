@@ -21,7 +21,7 @@ public class PlayerRepository {
 		return playerGameMap.remove(sessionId);
 	}
 
-	public void removePlayer(List<String> sessionIds) {
+	public void removePlayers(List<String> sessionIds) {
 		playerGameMap.keySet().removeAll(sessionIds);
 	}
 

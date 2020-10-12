@@ -2,7 +2,7 @@ package com.github.khornya.useyourwords.utils;
 
 import com.github.khornya.useyourwords.model.Player;
 
-public class PlayerUtils {
+public class GameUtils {
 
 	public int getLastPlayerIndex(Player[] players) {
 		int j = 0;

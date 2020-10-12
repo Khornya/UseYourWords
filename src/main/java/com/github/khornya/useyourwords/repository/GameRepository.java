@@ -14,16 +14,10 @@ import java.util.stream.Stream;
 public class GameRepository {
 
 	/**
-	 * map to store waiting games
-	 */
-	@Autowired
-	private Map<String, Game> waitingGameMap;
-
-	/**
 	 * map to store playing games
 	 */
 	@Autowired
-	private Map<String, Game> playingGameMap;
+	private Map<String, Game> gameMap;
 
 	@Autowired
 	private PlayerRepository playerRepository;
@@ -35,28 +29,8 @@ public class GameRepository {
 	 *            gameId of that game
 	 * @return game or null if the gameId not exists
 	 */
-	public Game getPlayingGame(String gameId) {
-		return playingGameMap.containsKey(gameId) ? playingGameMap.get(gameId) : null;
-	}
-
-	/**
-	 * get the waiting game by gameId
-	 * 
-	 * @param gameId
-	 *            gameId of that game
-	 * @return game or null if the gameId not exists
-	 */
-	public Game getWaitingGame(String gameId) {
-		return waitingGameMap.containsKey(gameId) ? waitingGameMap.get(gameId) : null;
-	}
-
-	/**
-	 * get the map store all waiting games
-	 * 
-	 * @return map store all waiting games
-	 */
-	public Map<String, Game> getWaitingGameMap() {
-		return waitingGameMap;
+	public Game getGame(String gameId) {
+		return gameMap.containsKey(gameId) ? gameMap.get(gameId) : null;
 	}
 
 	/**
@@ -64,8 +38,8 @@ public class GameRepository {
 	 * 
 	 * @return map store all playing games
 	 */
-	public Map<String, Game> getPlayingGameMap() {
-		return playingGameMap;
+	public Map<String, Game> getGameMap() {
+		return gameMap;
 	}
 
 	/**
@@ -76,22 +50,11 @@ public class GameRepository {
 	 *            gameId of playing game
 	 * @return game object or null if the game not exists
 	 */
-	public Game removePlayingGame(String gameId) {
-		Game t = playingGameMap.remove(gameId);
-		if (t != null)
-			playerRepository.removePlayer(Stream.of(t.getPlayers()).filter(Objects::nonNull).map(Player::getSessionId).collect(Collectors.toList()));
-		return t;
-	}
-
-	/**
-	 * remove the waiting game in the map
-	 * 
-	 * @param gameId
-	 *            gameId of the game
-	 * @return game object or null if the game not exists
-	 */
-	public Game removeWaitingGame(String gameId) {
-		return waitingGameMap.remove(gameId);
+	public Game removeGame(String gameId) {
+		Game game = gameMap.remove(gameId);
+		if (game != null)
+			playerRepository.removePlayers(Stream.of(game.getPlayers()).filter(Objects::nonNull).map(Player::getSessionId).collect(Collectors.toList()));
+		return game;
 	}
 
 	/**
@@ -103,22 +66,8 @@ public class GameRepository {
 	 *            object extend abstractGame
 	 * @return object added to playing game map
 	 */
-	public Game addPlayingGame(String gameId, Game game) {
-		playingGameMap.put(gameId, game);
-		return game;
-	}
-
-	/**
-	 * take a game object and store it to waiting game map
-	 * 
-	 * @param gameId
-	 *            gameId of the game
-	 * @param game
-	 *            object extend abstractGame
-	 * @return object added to waiting game map
-	 */
-	public Game addWaitingGame(String gameId, Game game) {
-		waitingGameMap.put(gameId, game);
+	public Game addGame(String gameId, Game game) {
+		gameMap.put(gameId, game);
 		return game;
 	}
 

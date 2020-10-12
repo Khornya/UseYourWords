@@ -12,19 +12,58 @@ public class Game {
 
     /**
      * max number of player of each room. Change by
-     * websocket.gameroom.config.numof.player properties.
+     * websocket.gameroom.config.numof.rounds property.
+     */
+    @Value(value = "${websocket.gameroom.config.numof.rounds}")
+    protected int defaultNumOfRounds;
+    /**
+     * max number of player of each room. Change by
+     * websocket.gameroom.config.numof.player property.
      */
     @Value(value = "${websocket.gameroom.config.numof.player}")
-    protected int numOfPlayer;
+    protected int defaultNumOfPlayers;
 
     private String id;
-    protected Player[] players;
+    private Player[] players;
+    private Team[] teams;
+
     private Set<String> readyPlayers = new HashSet<>();
     private AtomicInteger joinCount = new AtomicInteger(0);
 
     public Game() {
         this.id = UUID.randomUUID().toString();
-        this.players = new Player[numOfPlayer];
+        this.players = new Player[defaultNumOfPlayers];
+    }
+
+    public Game(String id, int numOfPlayers, int numOfTeams, int numOfRounds) {
+        this.id = id;
+        this.players = new Player[numOfPlayers];
+        this.teams = new Team[numOfTeams];
+        this.defaultNumOfRounds = numOfRounds;
+    }
+
+    public int getDefaultNumOfRounds() {
+        return defaultNumOfRounds;
+    }
+
+    public void setDefaultNumOfRounds(int defaultNumOfRounds) {
+        this.defaultNumOfRounds = defaultNumOfRounds;
+    }
+
+    public int getDefaultNumOfPlayers() {
+        return defaultNumOfPlayers;
+    }
+
+    public void setDefaultNumOfPlayers(int defaultNumOfPlayers) {
+        this.defaultNumOfPlayers = defaultNumOfPlayers;
+    }
+
+    public Team[] getTeams() {
+        return teams;
+    }
+
+    public void setTeams(Team[] teams) {
+        this.teams = teams;
     }
 
     public String getId() {
