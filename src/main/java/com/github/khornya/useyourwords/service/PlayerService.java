@@ -1,8 +1,9 @@
 package com.github.khornya.useyourwords.service;
 
-import com.github.khornya.useyourwords.model.Game;
-import com.github.khornya.useyourwords.model.Message;
-import com.github.khornya.useyourwords.model.Player;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.khornya.useyourwords.model.*;
 import com.github.khornya.useyourwords.repository.GameRepository;
 import com.github.khornya.useyourwords.repository.PlayerRepository;
 import com.github.khornya.useyourwords.utils.GameUtils;
@@ -38,14 +39,19 @@ public class PlayerService extends WebSocketService {
     @Value(value = "${websocket.gameroom.config.numof.player}")
     private int numOfPlayer;
 
-    public void addPlayer(String sessionId, String gameId, String name) {
+    public void addPlayer(String sessionId, String gameId, String name) throws JsonProcessingException {
         logger.info("addPlayer, sessionId: ", sessionId, ", gameId: ", gameId, ", name: ", name);
         Game game = gameRepository.getGame(gameId);
         if (game != null && game.getJoinCount().incrementAndGet() <= game.getPlayers().length)
             addPlayer(new Player(name, sessionId), game);
         else {
-            Map<String, Object> playerPayload = Map.of("type", Message.MessageType.ERROR, "message", "Unable to join this game");
-            webSocketService.replyToUser(sessionId, playerPayload);
+            ObjectMapper objectMapper = new ObjectMapper();
+            ErrorMessageContent errorMessageContent = new ErrorMessageContent(ErrorCode.JOIN_INVALID_GAMEID.toString(), "Unable to join this game");
+            Message message = new Message(Message.MessageType.ERROR, errorMessageContent);
+            String json = objectMapper.writeValueAsString(message);
+            Map<String, Object> playerPayload = objectMapper.readValue(json, new TypeReference<>() {
+            });
+            webSocketService.replyToUser(sessionId, playerPayload); //TODO convert object to map inside replyToUser
         }
     }
 

@@ -1,5 +1,6 @@
 package com.github.khornya.useyourwords.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.khornya.useyourwords.model.Game;
 import com.github.khornya.useyourwords.model.GameCreationMessage;
 import com.github.khornya.useyourwords.service.GameService;
@@ -37,12 +38,12 @@ public class PlayerWebSocketController {
 	private SimpMessagingTemplate simpMessagingTemplate;
 
 	@MessageMapping("/join/{gameId}/{name}")
-	public void join(@Header("simpSessionId") String sessionId, @DestinationVariable(value = "gameId") String gameId, @DestinationVariable(value = "name") String name) {
+	public void join(@Header("simpSessionId") String sessionId, @DestinationVariable(value = "gameId") String gameId, @DestinationVariable(value = "name") String name) throws JsonProcessingException {
 		playerService.addPlayer(sessionId, gameId, name);
 	}
 
 	@MessageMapping("/create")
-	public void create(@Header("simpSessionId") String sessionId, @Payload GameCreationMessage message) {
+	public void create(@Header("simpSessionId") String sessionId, @Payload GameCreationMessage message) throws JsonProcessingException {
 		String gameId;
 		do {
 			gameId = gameIdGenerator.get();

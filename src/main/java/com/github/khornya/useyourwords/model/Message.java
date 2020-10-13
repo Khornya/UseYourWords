@@ -6,31 +6,27 @@ public class Message {
         PLAYER_JOINED, PLAYER_LEFT, GAME_OVER, NEXT_ROUND, JOINED, ERROR
     }
 
-    private MessageType messageType;
-    private String content;
-    private String sender;
+    private MessageType type;
+    private MessageContent content;
 
-    public MessageType getType() {
-        return messageType;
-    }
-
-    public void setType(MessageType messageType) {
-        this.messageType = messageType;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
+    public Message(MessageType type, MessageContent content) {
+        this.type = type;
         this.content = content;
     }
 
-    public String getSender() {
-        return sender;
+    public MessageType getType() {
+        return type;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
+    public void setType(MessageType type) {
+        this.type = type;
+    }
+
+    public MessageContent getContent() {
+        return content;
+    }
+
+    public void setContent(MessageContent content) {
+        this.content = content;
     }
 }
