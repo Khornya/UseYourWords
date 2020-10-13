@@ -12,6 +12,7 @@ class App extends React.Component {
   private stompClient: Stomp.Client;
   private stompSubscription: Stomp.Subscription;
   private gameId: string;
+  private joinFormError: string;
 
   state = {
     isWaitingForConnection: true,
@@ -23,6 +24,7 @@ class App extends React.Component {
   componentDidMount = () => {
     this.stompClient = Stomp.client("ws://localhost:8080/sock");
     this.stompClient.connect({}, this.onConnected, this.onError);
+    this.joinFormError = "";
   };
 
   render = () => {
@@ -33,7 +35,12 @@ class App extends React.Component {
         </div>
         {this.state.isWaitingToPlay && <WaitingRoom />}
         {this.state.isWaitingForConnection && <WaitingMessage />}
-        {this.state.isJoining && <GameForm stompClient={this.stompClient} />}
+        {this.state.isJoining && (
+          <GameForm
+            stompClient={this.stompClient}
+            joinFormError={this.joinFormError}
+          />
+        )}
         {this.state.isPlaying && <GameRoom gameId={this.gameId} />}
       </div>
     );
@@ -45,6 +52,10 @@ class App extends React.Component {
       isWaitingForConnection: false,
       isJoining: true,
     });
+    this.stompSubscription = this.stompClient.subscribe(
+      `/user/queue/reply`,
+      this.onMessageReceived
+    );
     return true;
   };
 
@@ -56,18 +67,17 @@ class App extends React.Component {
 
   onMessageReceived = (payload: any) => {
     let message = JSON.parse(payload.body);
-    if (message.type === "JOIN") {
-    } else if (message.type === "LEAVE") {
-    } else {
+    switch (message.type) {
+      case "JOINED":
+        console.log(`You joined game ${message.gameId}`);
+        break;
+      case "ERROR":
+        console.error(`ERROR : ${message.message}`);
+        this.joinFormError = message.message;
+        break;
+      default:
+        console.log(message);
     }
-  };
-
-  private subscribe = (gameId: string) => {
-    console.log("session ID :", _.last(this.stompClient.ws.url.split("/")));
-    this.stompSubscription = this.stompClient.subscribe(
-      `/game-room/${gameId}`,
-      this.onMessageReceived
-    );
   };
 }
 

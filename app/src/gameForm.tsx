@@ -4,6 +4,7 @@ import Stomp from "stompjs";
 
 interface IGameFormProps {
   stompClient: Stomp.Client;
+  joinFormError: string;
 }
 
 class GameForm extends React.Component<IGameFormProps> {
@@ -70,6 +71,11 @@ class GameForm extends React.Component<IGameFormProps> {
                 id="gameId"
                 placeholder="Enter game ID"
               />
+              {this.props.joinFormError !== "" && (
+                <div className="tooltip">
+                  <p>{this.props.joinFormError}</p>
+                </div>
+              )}
             </div>
           ) : (
             <div id="createGameForm">
