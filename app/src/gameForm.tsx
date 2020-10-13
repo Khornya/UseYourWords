@@ -1,6 +1,7 @@
 import * as React from "react";
 import $ from "jquery";
 import Stomp from "stompjs";
+import { ICreateMessagePayload } from "./models";
 
 interface IGameFormProps {
   stompClient: Stomp.Client;
@@ -71,11 +72,15 @@ class GameForm extends React.Component<IGameFormProps> {
                 id="gameId"
                 placeholder="Enter game ID"
               />
-              {this.props.joinFormError !== "" && (
-                <div className="tooltip">
-                  <p>{this.props.joinFormError}</p>
-                </div>
-              )}
+              <div
+                className={
+                  !this.props.joinFormError
+                    ? "error-tooltip d-none"
+                    : "error-tooltip border border-danger rounded"
+                }
+              >
+                {this.props.joinFormError}
+              </div>
             </div>
           ) : (
             <div id="createGameForm">
@@ -132,16 +137,13 @@ class GameForm extends React.Component<IGameFormProps> {
       let numOfPlayers = $("#numOfPlayers").val();
       let numOfTeams = $("#numOfTeams").val();
       let numOfRounds = $("#numOfRounds").val();
-      this.props.stompClient.send(
-        `/app/create`,
-        {},
-        JSON.stringify({
-          name,
-          numOfPlayers,
-          numOfTeams,
-          numOfRounds,
-        })
-      );
+      const payload: ICreateMessagePayload = {
+        name: name.toString(),
+        numOfPlayers: parseInt(numOfPlayers.toString()),
+        numOfTeams: parseInt(numOfTeams.toString()),
+        numOfRounds: parseInt(numOfRounds.toString()),
+      };
+      this.props.stompClient.send(`/app/create`, {}, JSON.stringify(payload));
     }
   };
 }
