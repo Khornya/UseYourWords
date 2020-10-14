@@ -114,7 +114,7 @@ public class PlayerService extends WebSocketService {
             }
             gameService.playerLeaved(game, i);
         }
-        send("player-list", gameId, "players", players);
+//        send("player-list", gameId, "players", players);
     }
 
     public void ready(String sessionId, String gameId) {
@@ -122,7 +122,7 @@ public class PlayerService extends WebSocketService {
         Game game = gameRepository.getGame(gameId);
         if (game == null)
             return;
-        send("player-list", gameId, "players", game.getPlayers());
+//        send("player-list", gameId, "players", game.getPlayers());
         synchronized (game) {
             game.addReadyPlayer(sessionId);
             if (game.getReadyPlayersSize() == numOfPlayer)

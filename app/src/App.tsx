@@ -25,6 +25,7 @@ class App extends React.Component {
     isJoining: false,
     isPlaying: false,
     joinFormError: "",
+    gameId: ""
   };
 
   componentDidMount = () => {
@@ -39,7 +40,7 @@ class App extends React.Component {
         <div className="banner d-flex justify-content-center">
           <h1>Use Your Words</h1>
         </div>
-        {this.state.isWaitingToPlay && <WaitingRoom />}
+        {this.state.isWaitingToPlay && <WaitingRoom gameId={this.state.gameId}/>}
         {this.state.isWaitingForConnection && <WaitingMessage />}
         {this.state.isJoining && (
           <GameForm
@@ -78,6 +79,12 @@ class App extends React.Component {
       case "JOINED":
         const joinedMessageContent = message.content as IJoinedMessageContent;
         console.log(`You joined game ${joinedMessageContent.gameId}`);
+        this.setState({
+          isJoining: false,
+          isWaitingToPlay: true,
+          joinFormError: "",
+          gameId: joinedMessageContent.gameId
+        })
         break;
       case "ERROR":
         const errorMessageContent = message.content as IErrorMessageContent;
