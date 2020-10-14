@@ -1,5 +1,7 @@
 package com.github.khornya.useyourwords.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.khornya.useyourwords.model.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +25,18 @@ public class WebSocketService {
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
-	public void replyToUser(String sessionId, Map<String, Object> playerPayload) {
+	public void replyToUser(String sessionId, Message message) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		Map<String, Object> playerPayload = objectMapper.convertValue(message, Map.class);
         SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
         headerAccessor.setSessionId(sessionId);
         headerAccessor.setLeaveMutable(true);
         simpMessagingTemplate.convertAndSendToUser(sessionId, "/queue/reply", playerPayload, headerAccessor.getMessageHeaders());
     }
 
-    public void sendToRoom(String gameId, Map<String,Object> gameRoomPayload) {
+    public void sendToRoom(String gameId, Message message) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		Map<String,Object> gameRoomPayload = objectMapper.convertValue(message, Map.class);
 		simpMessagingTemplate.convertAndSend(String.format("%s/%s",brokerDestinationPrefix, gameId), gameRoomPayload);
 	}
 
@@ -99,9 +105,9 @@ public class WebSocketService {
 	 *            the sessionId of the user
 	 * @param gameId
 	 *            the gameId of the game
-	 * @param key
+	 * @param keys
 	 *            key of the message payload
-	 * @param value
+	 * @param values
 	 *            value of the message payload
 	 */
 	public void sendTo(String path, String sessionId, String gameId, String[] keys, Object[] values) {
@@ -134,9 +140,9 @@ public class WebSocketService {
 	 *            the destination path
 	 * @param sessionId
 	 *            the gameId of the game
-	 * @param keys
+	 * @param key
 	 *            key of the message payload
-	 * @param values
+	 * @param value
 	 *            value of the message payload
 	 */
 	public void sendTo(String path, String sessionId, String key, Object value) {

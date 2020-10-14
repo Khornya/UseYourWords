@@ -7,6 +7,7 @@ import com.github.khornya.useyourwords.model.*;
 import com.github.khornya.useyourwords.repository.GameRepository;
 import com.github.khornya.useyourwords.repository.PlayerRepository;
 import com.github.khornya.useyourwords.utils.GameUtils;
+import org.hibernate.mapping.Join;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,19 +40,15 @@ public class PlayerService extends WebSocketService {
     @Value(value = "${websocket.gameroom.config.numof.player}")
     private int numOfPlayer;
 
-    public void addPlayer(String sessionId, String gameId, String name) throws JsonProcessingException {
+    public void addPlayer(String sessionId, String gameId, String name) {
         logger.info("addPlayer, sessionId: ", sessionId, ", gameId: ", gameId, ", name: ", name);
         Game game = gameRepository.getGame(gameId);
         if (game != null && game.getJoinCount().incrementAndGet() <= game.getPlayers().length)
             addPlayer(new Player(name, sessionId), game);
         else {
-            ObjectMapper objectMapper = new ObjectMapper();
             ErrorMessageContent errorMessageContent = new ErrorMessageContent(ErrorCode.JOIN_INVALID_GAMEID.toString(), "Unable to join this game");
             Message message = new Message(Message.MessageType.ERROR, errorMessageContent);
-            String json = objectMapper.writeValueAsString(message);
-            Map<String, Object> playerPayload = objectMapper.readValue(json, new TypeReference<>() {
-            });
-            webSocketService.replyToUser(sessionId, playerPayload); //TODO convert object to map inside replyToUser
+            webSocketService.replyToUser(sessionId, message);
         }
     }
 
@@ -70,13 +67,13 @@ public class PlayerService extends WebSocketService {
         gameId = game.getId();
         playerRepository.addPlayer(player.getSessionId(), gameId);
         // prévenir la room de l'arrivée d'un joueur
-        Map<String, Object> gameRoomPayload = new HashMap<>();
-        gameRoomPayload.put("type", Message.MessageType.PLAYER_JOINED);
-        gameRoomPayload.put("name", player.getName());
-        webSocketService.sendToRoom(gameId, gameRoomPayload);
+        PlayerJoinedMessageContent playerJoinedMessageContent = new PlayerJoinedMessageContent(player.getName(), i);
+        Message gameRoomMessage = new Message(Message.MessageType.PLAYER_JOINED, playerJoinedMessageContent);
+        webSocketService.sendToRoom(gameId, gameRoomMessage);
         // prévenir le joueur qu'il rejoint une partie
-        Map<String, Object> playerPayload = Map.of("type", Message.MessageType.JOINED, "gameId", gameId, "name", player.getName(), "index", i);
-        webSocketService.replyToUser(player.getSessionId(), playerPayload);
+        JoinedMessageContent joinedMessageContent = new JoinedMessageContent(player.getName(), i, gameId);
+        Message playerMessage = new Message(Message.MessageType.JOINED, joinedMessageContent);
+        webSocketService.replyToUser(player.getSessionId(), playerMessage);
     }
 
     public void removePlayer(String sessionId) {
