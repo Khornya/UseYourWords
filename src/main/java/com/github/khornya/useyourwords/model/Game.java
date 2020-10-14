@@ -16,6 +16,7 @@ public class Game {
      */
     @Value(value = "${websocket.gameroom.config.numof.rounds}")
     protected int defaultNumOfRounds;
+
     /**
      * max number of player of each room. Change by
      * websocket.gameroom.config.numof.player property.
@@ -23,9 +24,18 @@ public class Game {
     @Value(value = "${websocket.gameroom.config.numof.player}")
     protected int defaultNumOfPlayers;
 
+    /**
+     * max number of player of each room. Change by
+     * websocket.gameroom.config.numof.teams property.
+     */
+    @Value(value = "${websocket.gameroom.config.numof.teams}")
+    protected int defaultNumOfTeams;
+
     private String id;
     private Player[] players;
     private Team[] teams;
+    private int numOfRounds;
+    private int currentRoundNumber = 0;
 
     private Set<String> readyPlayers = new HashSet<>();
     private AtomicInteger joinCount = new AtomicInteger(0);
@@ -33,13 +43,21 @@ public class Game {
     public Game() {
         this.id = UUID.randomUUID().toString();
         this.players = new Player[defaultNumOfPlayers];
+        this.teams = new Team[defaultNumOfTeams];
+        for (int i = 0; i < teams.length; i++) {
+            teams[i] = new Team(defaultNumOfPlayers / defaultNumOfTeams);
+        }
+        this.numOfRounds = defaultNumOfRounds;
     }
 
     public Game(String id, int numOfPlayers, int numOfTeams, int numOfRounds) {
         this.id = id;
         this.players = new Player[numOfPlayers];
         this.teams = new Team[numOfTeams];
-        this.defaultNumOfRounds = numOfRounds;
+        for (int i = 0; i < teams.length; i++) {
+            teams[i] = new Team(numOfPlayers / numOfTeams);
+        }
+        this.numOfRounds = numOfRounds;
     }
 
     public int getDefaultNumOfRounds() {
@@ -108,6 +126,17 @@ public class Game {
 
     public void setReadyPlayers(Set<String> readyPlayers) {
         this.readyPlayers = readyPlayers;
+    }
+
+    public int addPlayer(Player player) {
+        int i;
+        for (i = 0; i < players.length; i++) {
+            if (players[i] == null) {
+                players[i] = player;
+                break;
+            }
+        }
+        return i;
     }
 
     @Override

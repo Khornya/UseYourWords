@@ -1,20 +1,20 @@
 package com.github.khornya.useyourwords.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.khornya.useyourwords.model.*;
+import com.github.khornya.useyourwords.model.message.Message;
+import com.github.khornya.useyourwords.model.message.game.PlayerJoinedMessageContent;
+import com.github.khornya.useyourwords.model.message.player.ErrorCode;
+import com.github.khornya.useyourwords.model.message.player.ErrorMessageContent;
+import com.github.khornya.useyourwords.model.message.player.JoinedMessageContent;
 import com.github.khornya.useyourwords.repository.GameRepository;
 import com.github.khornya.useyourwords.repository.PlayerRepository;
 import com.github.khornya.useyourwords.utils.GameUtils;
-import org.hibernate.mapping.Join;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -38,7 +38,7 @@ public class PlayerService extends WebSocketService {
     private GameUtils gameUtils;
 
     @Value(value = "${websocket.gameroom.config.numof.player}")
-    private int numOfPlayer;
+    private int maxNumOfPlayers;
 
     public void addPlayer(String sessionId, String gameId, String name) {
         logger.info("addPlayer, sessionId: ", sessionId, ", gameId: ", gameId, ", name: ", name);
@@ -53,25 +53,27 @@ public class PlayerService extends WebSocketService {
     }
 
     private void addPlayer(Player player, Game game) {
-        String gameId = null;
-        int i = 0;
-        logger.info("addPlayer, player: ", player, ", game: ", game);
-        Player[] players = game.getPlayers();
 
-        for (; i < players.length; i++) {
-            if (players[i] == null) {
-                players[i] = player;
-                break;
-            }
+        logger.info("addPlayer, player: ", player, ", game: ", game);
+        int i = game.addPlayer(player);
+        Team[] teams = game.getTeams();
+        for (Team team : teams) {
+                if (team == null) {
+                    team = new Team();
+                }
+                if (team.getCurrentNumOfPlayers() < team.getMaxNumOfPlayers()) {
+                    team.addPlayer(player);
+                    break;
+                }
         }
-        gameId = game.getId();
+        String gameId = game.getId();
+        String name = player.getName();
         playerRepository.addPlayer(player.getSessionId(), gameId);
-        // prévenir la room de l'arrivée d'un joueur
-        PlayerJoinedMessageContent playerJoinedMessageContent = new PlayerJoinedMessageContent(player.getName(), i);
+
+        PlayerJoinedMessageContent playerJoinedMessageContent = new PlayerJoinedMessageContent(name, i);
         Message gameRoomMessage = new Message(Message.MessageType.PLAYER_JOINED, playerJoinedMessageContent);
         webSocketService.sendToRoom(gameId, gameRoomMessage);
-        // prévenir le joueur qu'il rejoint une partie
-        JoinedMessageContent joinedMessageContent = new JoinedMessageContent(player.getName(), i, gameId);
+        JoinedMessageContent joinedMessageContent = new JoinedMessageContent(name, i, gameId);
         Message playerMessage = new Message(Message.MessageType.JOINED, joinedMessageContent);
         webSocketService.replyToUser(player.getSessionId(), playerMessage);
     }
@@ -114,7 +116,6 @@ public class PlayerService extends WebSocketService {
             }
             gameService.playerLeaved(game, i);
         }
-//        send("player-list", gameId, "players", players);
     }
 
     public void ready(String sessionId, String gameId) {
@@ -122,10 +123,9 @@ public class PlayerService extends WebSocketService {
         Game game = gameRepository.getGame(gameId);
         if (game == null)
             return;
-//        send("player-list", gameId, "players", game.getPlayers());
         synchronized (game) {
             game.addReadyPlayer(sessionId);
-            if (game.getReadyPlayersSize() == numOfPlayer)
+            if (game.getReadyPlayersSize() == game.getPlayers().length)
                 gameService.start(gameId);
         }
     }

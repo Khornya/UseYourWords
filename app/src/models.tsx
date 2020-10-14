@@ -1,5 +1,5 @@
 export interface IMessage {
-  type: "ERROR" | "JOINED";
+  type: "ERROR" | "JOINED" | "PLAYER_JOINED" | "START" | "PLAYER_LEFT" | "GAME_OVER" | "NEXT_ROUND";
   content: IMessageContent;
 }
 
@@ -12,6 +12,12 @@ export interface IErrorMessageContent extends IMessageContent {
 
 export interface IJoinedMessageContent extends IMessageContent {
   gameId: string;
+  playerIndex: number
+}
+
+export interface IPlayerJoinedMessageContent extends IMessageContent {
+  name: string
+  index: number
 }
 
 export interface ICreateMessagePayload {

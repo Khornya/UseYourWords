@@ -1,4 +1,6 @@
-package com.github.khornya.useyourwords.model;
+package com.github.khornya.useyourwords.model.message.player;
+
+import com.github.khornya.useyourwords.model.message.MessageContent;
 
 public class JoinedMessageContent extends MessageContent {
     private String name;

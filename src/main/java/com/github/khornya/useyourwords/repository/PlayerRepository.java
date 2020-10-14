@@ -9,7 +9,6 @@ import java.util.Map;
 @Repository
 public class PlayerRepository {
 
-	// TODO move to redis ?
 	@Autowired
 	private Map<String, String> playerGameMap;
 

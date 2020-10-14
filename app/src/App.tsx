@@ -12,12 +12,13 @@ import {
   IJoinedMessageContent,
   IMessage,
   IMessageContent,
+  IPlayerJoinedMessageContent,
 } from "./models";
 
 class App extends React.Component {
   private stompClient: Stomp.Client;
-  private stompSubscription: Stomp.Subscription;
-  private gameId: string;
+  private stompPlayerSubscription: Stomp.Subscription;
+  private stompGameSubscription: Stomp.Subscription;
 
   state = {
     isWaitingForConnection: true,
@@ -31,7 +32,6 @@ class App extends React.Component {
   componentDidMount = () => {
     this.stompClient = Stomp.client("ws://localhost:8080/sock");
     this.stompClient.connect({}, this.onConnected, this.onError);
-    this.setState({ joinFormError: "" });
   };
 
   render = () => {
@@ -40,7 +40,7 @@ class App extends React.Component {
         <div className="banner d-flex justify-content-center">
           <h1>Use Your Words</h1>
         </div>
-        {this.state.isWaitingToPlay && <WaitingRoom gameId={this.state.gameId}/>}
+        {this.state.isWaitingToPlay && <WaitingRoom gameId={this.state.gameId} />}
         {this.state.isWaitingForConnection && <WaitingMessage />}
         {this.state.isJoining && (
           <GameForm
@@ -48,7 +48,7 @@ class App extends React.Component {
             joinFormError={this.state.joinFormError}
           />
         )}
-        {this.state.isPlaying && <GameRoom gameId={this.gameId} />}
+        {this.state.isPlaying && <GameRoom gameId={this.state.gameId} />}
       </div>
     );
   };
@@ -59,9 +59,9 @@ class App extends React.Component {
       isWaitingForConnection: false,
       isJoining: true,
     });
-    this.stompSubscription = this.stompClient.subscribe(
+    this.stompPlayerSubscription = this.stompClient.subscribe(
       `/user/queue/reply`,
-      this.onMessageReceived
+      this.onPlayerMessageReceived
     );
     return true;
   };
@@ -72,13 +72,18 @@ class App extends React.Component {
     return true;
   };
 
-  onMessageReceived = (payload: Frame) => {
+  private onPlayerMessageReceived = (payload: Frame) => {
     const message: IMessage = JSON.parse(payload.body);
     const content: IMessageContent = message.content;
     switch (message.type) {
       case "JOINED":
         const joinedMessageContent = message.content as IJoinedMessageContent;
         console.log(`You joined game ${joinedMessageContent.gameId}`);
+        this.stompGameSubscription = this.stompClient.subscribe(
+          `/game-room/${joinedMessageContent.gameId}`,
+          this.onGameMessageReceived
+        )
+        this.stompClient.send(`/app/ready`, {}, JSON.stringify(joinedMessageContent))
         this.setState({
           isJoining: false,
           isWaitingToPlay: true,
@@ -99,6 +104,26 @@ class App extends React.Component {
         console.log(message);
     }
   };
+
+  private onGameMessageReceived = (payload: Frame) => {
+    const message: IMessage = JSON.parse(payload.body);
+    const content: IMessageContent = message.content;
+    switch (message.type) {
+      case "START":
+        this.setState({
+          isWaitingToPlay: false,
+          isPlaying: true
+        })
+        break;
+      case "PLAYER_JOINED":
+        const playerJoinedMessageContent = message.content as IPlayerJoinedMessageContent
+        console.log(`${playerJoinedMessageContent.name} joined the game`)
+        break;
+      default:
+        console.log(message)
+    }
+  }
+
 }
 
 export default App;

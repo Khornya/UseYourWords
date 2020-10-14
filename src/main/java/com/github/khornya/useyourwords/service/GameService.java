@@ -1,6 +1,8 @@
 package com.github.khornya.useyourwords.service;
 
 import com.github.khornya.useyourwords.model.Game;
+import com.github.khornya.useyourwords.model.message.game.GameStartMessageContent;
+import com.github.khornya.useyourwords.model.message.Message;
 import com.github.khornya.useyourwords.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,9 @@ public class GameService {
 
 	@Autowired
 	private GameRepository gameRepository;
+
+	@Autowired
+	private WebSocketService webSocketService;
 
 	public void addGame(String gameId, Game game) {
 		gameRepository.addGame(gameId, game);
@@ -32,9 +37,9 @@ public class GameService {
 	 * handle a player leaved the game
 	 *
 	 * @param game object extends abstractGame
-	 * @param i    index of the player who leaved the game
+	 * @param playerIndex    index of the player who leaved the game
 	 */
-	public void playerLeaved(Game game, int i) {
+	public void playerLeaved(Game game, int playerIndex) {
 
 	}
 
@@ -44,7 +49,9 @@ public class GameService {
 	 * @param gameId gameId of the game needed to start
 	 */
 	public void start(String gameId) {
-
+		GameStartMessageContent gameStartMessageContent = new GameStartMessageContent(getGameById(gameId).getTeams());
+		Message gameRoomMessage = new Message(Message.MessageType.START, gameStartMessageContent);
+		webSocketService.sendToRoom(gameId, gameRoomMessage);
 	}
 
 }
