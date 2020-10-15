@@ -1,6 +1,6 @@
 import * as React from "react";
 
-class WaitingMessage extends React.PureComponent {
+class WaitingMessage extends React.Component {
   render = () => {
     return (
       <div className="waitingMessage d-flex justify-content-center">
