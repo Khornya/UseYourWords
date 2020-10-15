@@ -6,14 +6,19 @@ import WaitingMessage from "./waitingMessage";
 import GameForm from "./gameForm";
 import WaitingRoom from "./waitingRoom";
 import GameRoom from "./gameRoom";
+import { Element } from "./models"
 import _ from "lodash-es";
 import {
   IErrorMessageContent,
+  IGameRoundMessageContent,
   IJoinedMessageContent,
   IMessage,
   IMessageContent,
   IPlayerJoinedMessageContent,
+  IStartMessageContent,
+  Team,
 } from "./models";
+
 
 class App extends React.Component {
   private stompClient: Stomp.Client;
@@ -26,7 +31,10 @@ class App extends React.Component {
     isJoining: false,
     isPlaying: false,
     joinFormError: "",
-    gameId: ""
+    gameId: "",
+    teams: ([] as Team[]),
+    element: null as Element,
+    roundNumber: 0
   };
 
   componentDidMount = () => {
@@ -48,7 +56,7 @@ class App extends React.Component {
             joinFormError={this.state.joinFormError}
           />
         )}
-        {this.state.isPlaying && <GameRoom gameId={this.state.gameId} />}
+        {this.state.isPlaying && <GameRoom gameId={this.state.gameId} teams={this.state.teams} element={this.state.element} roundNumber={this.state.roundNumber} />}
       </div>
     );
   };
@@ -112,12 +120,20 @@ class App extends React.Component {
       case "START":
         this.setState({
           isWaitingToPlay: false,
-          isPlaying: true
+          isPlaying: true,
+          teams: (message.content as IStartMessageContent).teams
         })
         break;
       case "PLAYER_JOINED":
         const playerJoinedMessageContent = message.content as IPlayerJoinedMessageContent
         console.log(`${playerJoinedMessageContent.name} joined the game`)
+        break;
+      case "NEXT_ROUND":
+        const gameRoundMessageContent = message.content as IGameRoundMessageContent
+        this.setState({
+          roundNumber: gameRoundMessageContent.roundNumber,
+          element: gameRoundMessageContent.element
+        })
         break;
       default:
         console.log(message)

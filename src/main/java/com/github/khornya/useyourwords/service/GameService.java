@@ -1,11 +1,18 @@
 package com.github.khornya.useyourwords.service;
 
+import com.github.khornya.useyourwords.model.Element;
+import com.github.khornya.useyourwords.model.ElementType;
 import com.github.khornya.useyourwords.model.Game;
+import com.github.khornya.useyourwords.model.message.game.GameRoundMessageContent;
 import com.github.khornya.useyourwords.model.message.game.GameStartMessageContent;
 import com.github.khornya.useyourwords.model.message.Message;
 import com.github.khornya.useyourwords.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 @Service
 public class GameService {
@@ -49,9 +56,18 @@ public class GameService {
 	 * @param gameId gameId of the game needed to start
 	 */
 	public void start(String gameId) {
-		GameStartMessageContent gameStartMessageContent = new GameStartMessageContent(getGameById(gameId).getTeams());
+		Game game = getGameById(gameId);
+		GameStartMessageContent gameStartMessageContent = new GameStartMessageContent(game.getTeams());
 		Message gameRoomMessage = new Message(Message.MessageType.START, gameStartMessageContent);
 		webSocketService.sendToRoom(gameId, gameRoomMessage);
+		nextRound(game);
+	}
+
+	private void nextRound(Game game) {
+		Element element = game.nextRound();
+		GameRoundMessageContent gameRoundMessageContent = new GameRoundMessageContent(game.getCurrentRoundNumber(), element);
+		Message gameRoomMessage = new Message(Message.MessageType.NEXT_ROUND, gameRoundMessageContent);
+		webSocketService.sendToRoom(game.getId(), gameRoomMessage);
 	}
 
 }

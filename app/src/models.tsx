@@ -3,7 +3,7 @@ export interface IMessage {
   content: IMessageContent;
 }
 
-export interface IMessageContent {}
+export interface IMessageContent { }
 
 export interface IErrorMessageContent extends IMessageContent {
   code: string;
@@ -25,4 +25,32 @@ export interface ICreateMessagePayload {
   numOfPlayers: number;
   numOfTeams: number;
   numOfRounds: number;
+}
+
+export interface IStartMessageContent {
+  teams: Team[]
+}
+
+export interface IGameRoundMessageContent {
+  roundNumber: number
+  element: Element
+}
+
+export interface Team {
+  maxNumOfPlayers: number,
+  currentNumOfPlayers: number,
+  score: number,
+  players: Player[]
+}
+
+export interface Player {
+  name: string,
+  sessionId: string
+}
+
+export interface Element {
+  id: number
+  name: string
+  url: string
+  type: "PHOTO" | "VIDEO" | "TEXT"
 }

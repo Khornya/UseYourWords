@@ -2,10 +2,7 @@ package com.github.khornya.useyourwords.model;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Game {
@@ -39,6 +36,7 @@ public class Game {
 
     private Set<String> readyPlayers = new HashSet<>();
     private AtomicInteger joinCount = new AtomicInteger(0);
+    private ArrayList<Element> elements;
 
     public Game() {
         this.id = UUID.randomUUID().toString();
@@ -48,6 +46,7 @@ public class Game {
             teams[i] = new Team(defaultNumOfPlayers / defaultNumOfTeams);
         }
         this.numOfRounds = defaultNumOfRounds;
+        initializeElements();
     }
 
     public Game(String id, int numOfPlayers, int numOfTeams, int numOfRounds) {
@@ -58,6 +57,31 @@ public class Game {
             teams[i] = new Team(numOfPlayers / numOfTeams);
         }
         this.numOfRounds = numOfRounds;
+        initializeElements();
+    }
+
+    public int getDefaultNumOfTeams() {
+        return defaultNumOfTeams;
+    }
+
+    public void setDefaultNumOfTeams(int defaultNumOfTeams) {
+        this.defaultNumOfTeams = defaultNumOfTeams;
+    }
+
+    public int getNumOfRounds() {
+        return numOfRounds;
+    }
+
+    public void setNumOfRounds(int numOfRounds) {
+        this.numOfRounds = numOfRounds;
+    }
+
+    public int getCurrentRoundNumber() {
+        return currentRoundNumber;
+    }
+
+    public void setCurrentRoundNumber(int currentRoundNumber) {
+        this.currentRoundNumber = currentRoundNumber;
     }
 
     public int getDefaultNumOfRounds() {
@@ -142,5 +166,42 @@ public class Game {
     @Override
     public String toString() {
         return "Game [id=" + id + ", players=" + Arrays.toString(players) + ", readyPlayerSet=" + readyPlayers + ", joinCount=" + joinCount + "]";
+    }
+
+    public Element nextRound() {
+        currentRoundNumber++;
+        return elements.remove(0);
+    }
+
+    private void initializeElements() {
+        //TODO : get elements from repository
+        List<Element> videoElements = new ArrayList<>();
+        List<Element> photoElements = new ArrayList<>();
+        List<Element> textElements = new ArrayList<>();
+        Element videoElement = new Element();
+        videoElement.setType(ElementType.VIDEO);
+        videoElement.setUrl("https://www.youtube.com/watch?v=AioVDsXidh0");
+        for (int i = 0; i < numOfRounds; i++) {
+            videoElements.add(videoElement);
+        }
+        Element photoElement = new Element();
+        photoElement.setType(ElementType.PHOTO);
+        photoElement.setUrl("https://cornwallfilmfestival.com/wp-content/uploads/2015/11/ST6K4.jpg");
+        for (int i = 0; i < numOfRounds; i++) {
+            photoElements.add(photoElement);
+        }
+        Element textElement = new Element();
+        textElement.setType(ElementType.TEXT);
+        textElement.setUrl("J'ai perdu mon [...] au [...]");
+        for (int i = 0; i < numOfRounds; i++) {
+            textElements.add(textElement);
+        }
+        Random random = new Random();
+        elements = new ArrayList<>();
+        for (int i = 0; i < numOfRounds; i++) {
+            elements.add(photoElements.remove(random.nextInt(photoElements.size())));
+            elements.add(videoElements.remove(random.nextInt(videoElements.size())));
+            elements.add(textElements.remove(random.nextInt(textElements.size())));
+        }
     }
 }
