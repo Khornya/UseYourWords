@@ -1,5 +1,5 @@
 export interface IMessage {
-  type: "ERROR" | "JOINED" | "PLAYER_JOINED" | "START" | "PLAYER_LEFT" | "GAME_OVER" | "NEXT_ROUND";
+  type: "ERROR" | "JOINED" | "PLAYER_JOINED" | "START" | "PLAYER_LEFT" | "GAME_OVER" | "NEXT_ROUND" | "TIMER" | "END_ROUND";
   content: IMessageContent;
 }
 
@@ -34,6 +34,10 @@ export interface IStartMessageContent {
 export interface IGameRoundMessageContent {
   roundNumber: number
   element: Element
+}
+
+export interface ITimerMessageContent {
+  secondsLeft: number
 }
 
 export interface Team {

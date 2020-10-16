@@ -1,9 +1,11 @@
 import React from "react";
 import { Element } from "./models"
+import { Timer } from "./timer";
 
 interface IRoundProps {
     roundNumber: number
     element: Element
+    showTimer: boolean
 }
 
 export class Round extends React.Component<IRoundProps> {
@@ -14,6 +16,7 @@ export class Round extends React.Component<IRoundProps> {
         return (
             <div className="round">
                 <h2>Round n°{this.props.roundNumber}</h2>
+                {this.props.showTimer && <Timer duration={10}/>}
                 <form
                     id="roundForm"
                     name="roundForm"

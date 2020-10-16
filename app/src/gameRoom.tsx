@@ -8,6 +8,7 @@ interface IGameRoomProps {
   teams: Team[]
   element: Element
   roundNumber: number
+  showTimer: boolean
 }
 
 class GameRoom extends React.Component<IGameRoomProps> {
@@ -22,7 +23,7 @@ class GameRoom extends React.Component<IGameRoomProps> {
             )
           })}
         </div>
-        {this.props.roundNumber > 0 && <Round roundNumber={this.props.roundNumber} element={this.props.element}/>}
+        {this.props.roundNumber > 0 && <Round roundNumber={this.props.roundNumber} element={this.props.element} showTimer={this.props.showTimer}/>}
       </div>
     )
   }

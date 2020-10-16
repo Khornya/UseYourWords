@@ -6,7 +6,7 @@ import WaitingMessage from "./waitingMessage";
 import GameForm from "./gameForm";
 import WaitingRoom from "./waitingRoom";
 import GameRoom from "./gameRoom";
-import { Element } from "./models"
+import { Element, ITimerMessageContent } from "./models"
 import _ from "lodash-es";
 import {
   IErrorMessageContent,
@@ -34,7 +34,8 @@ class App extends React.Component {
     gameId: "",
     teams: ([] as Team[]),
     element: null as Element,
-    roundNumber: 0
+    roundNumber: 0,
+    showTimer: false
   };
 
   componentDidMount = () => {
@@ -56,7 +57,7 @@ class App extends React.Component {
             joinFormError={this.state.joinFormError}
           />
         )}
-        {this.state.isPlaying && <GameRoom gameId={this.state.gameId} teams={this.state.teams} element={this.state.element} roundNumber={this.state.roundNumber} />}
+        {this.state.isPlaying && <GameRoom gameId={this.state.gameId} teams={this.state.teams} element={this.state.element} roundNumber={this.state.roundNumber} showTimer={this.state.showTimer}/>}
       </div>
     );
   };
@@ -135,6 +136,12 @@ class App extends React.Component {
           element: gameRoundMessageContent.element
         })
         break;
+      case "TIMER":
+      const timerMessageContent = message.content as ITimerMessageContent
+      this.setState({
+        showTimer: true
+      })
+      break;
       default:
         console.log(message)
     }

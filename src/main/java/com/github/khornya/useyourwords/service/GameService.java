@@ -6,13 +6,12 @@ import com.github.khornya.useyourwords.model.Game;
 import com.github.khornya.useyourwords.model.message.game.GameRoundMessageContent;
 import com.github.khornya.useyourwords.model.message.game.GameStartMessageContent;
 import com.github.khornya.useyourwords.model.message.Message;
+import com.github.khornya.useyourwords.model.message.game.TimerMessageContent;
 import com.github.khornya.useyourwords.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class GameService {
@@ -64,10 +63,33 @@ public class GameService {
 	}
 
 	private void nextRound(Game game) {
+		String gameId = game.getId();
 		Element element = game.nextRound();
 		GameRoundMessageContent gameRoundMessageContent = new GameRoundMessageContent(game.getCurrentRoundNumber(), element);
 		Message gameRoomMessage = new Message(Message.MessageType.NEXT_ROUND, gameRoundMessageContent);
-		webSocketService.sendToRoom(game.getId(), gameRoomMessage);
+		webSocketService.sendToRoom(gameId, gameRoomMessage);
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				TimerMessageContent timerMessageContent = new TimerMessageContent(10);
+				Message gameRoomMessage = new Message(Message.MessageType.TIMER, timerMessageContent);
+				webSocketService.sendToRoom(gameId, gameRoomMessage);
+			}
+		}, 50 * 1000);
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				Message gameRoomMessage = new Message(Message.MessageType.END_ROUND, null);
+				webSocketService.sendToRoom(gameId, gameRoomMessage);
+				askForVotes(game);
+			}
+		}, 60 * 1000);
 	}
+
+	private void askForVotes(Game game) {
+
+	}
+
 
 }
