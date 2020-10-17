@@ -13,6 +13,10 @@ interface IRoundProps {
 }
 
 export class Round extends React.Component<IRoundProps> {
+    state = {
+        showSubmitButton: true
+    }
+
     render = () => {
         const textParts = this.props.element.url.split("[...]")
         let input = (index: number) => {
@@ -22,11 +26,12 @@ export class Round extends React.Component<IRoundProps> {
             <div className="round">
                 <h2>Round n°{this.props.roundNumber}</h2>
                 {this.props.showTimer && <Timer duration={10} />}
+
                 <form
                     id="roundForm"
                     name="roundForm"
                     className="w-20 mx-auto"
-                onSubmit={this.submitForm}
+                    onSubmit={this.submitForm}
                 >
                     {{
                         "PHOTO": <div className="form-group">
@@ -55,9 +60,9 @@ export class Round extends React.Component<IRoundProps> {
                             </div>
                         </div>
                     }[this.props.element.type]}
-                    <button type="submit" className="btn btn-primary">
+                    {this.state.showSubmitButton ? <button type="submit" className="btn btn-primary">
                         Answer
-                    </button>
+                    </button> : <div className="waitingMessage">Please wait for the other players ...</div>}
                 </form>
             </div>
         )
@@ -65,6 +70,7 @@ export class Round extends React.Component<IRoundProps> {
 
     private submitForm = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        this.setState({ showSubmitButton: false })
         let input = $("input[name=response]").val()
         const payload: IAnswerMessagePayload = {
             type: this.props.element.type,

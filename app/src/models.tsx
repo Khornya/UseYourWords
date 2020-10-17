@@ -46,6 +46,10 @@ export interface ITimerMessageContent {
   secondsLeft: number
 }
 
+export interface IEndRoundMessageContent {
+  answers: string[]
+}
+
 export interface Team {
   maxNumOfPlayers: number,
   currentNumOfPlayers: number,
@@ -70,4 +74,6 @@ export interface IGameState {
   element: Element
   roundNumber: number
   showTimer: boolean
+  displayVoteForm: boolean
+  answers: string[]
 }

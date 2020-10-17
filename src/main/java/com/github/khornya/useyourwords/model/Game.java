@@ -34,6 +34,7 @@ public class Game {
     private int numOfRounds;
     private int currentRoundNumber = 0;
     private ArrayList<Answer> answers = new ArrayList<>();
+    private ArrayList<Vote> votes = new ArrayList<>();
     private Set<String> readyPlayers = new HashSet<>();
     private AtomicInteger joinCount = new AtomicInteger(0);
     private ArrayList<Element> elements;
@@ -195,6 +196,14 @@ public class Game {
         this.timer = timer;
     }
 
+    public ArrayList<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(ArrayList<Vote> votes) {
+        this.votes = votes;
+    }
+
     public int addPlayer(Player player) {
         int i;
         for (i = 0; i < players.length; i++) {
@@ -211,9 +220,14 @@ public class Game {
         return "Game [id=" + id + ", players=" + Arrays.toString(players) + ", readyPlayerSet=" + readyPlayers + ", joinCount=" + joinCount + "]";
     }
 
-    public Element nextRound() {
+    public void nextRound() {
         currentRoundNumber++;
-        return elements.remove(0);
+        this.answers = new ArrayList<>();
+        this.votes = new ArrayList<>();
+        this.currentElement = elements.remove(0);
+        ArrayList<String> predefinedAnswerAsArray = new ArrayList<>();
+        predefinedAnswerAsArray.add(this.currentElement.getAnswer());
+        this.answers.add(new Answer(predefinedAnswerAsArray, -1, this.currentElement.getType()));
     }
 
     private void initializeElements() {
@@ -224,18 +238,21 @@ public class Game {
         Element videoElement = new Element();
         videoElement.setType(ElementType.VIDEO);
         videoElement.setUrl("https://www.youtube.com/watch?v=AioVDsXidh0");
+        videoElement.setAnswer("Suck kut : \"ce serait mieux si ça coupait pas !\"");
         for (int i = 0; i < numOfRounds; i++) {
             videoElements.add(videoElement);
         }
         Element photoElement = new Element();
         photoElement.setType(ElementType.PHOTO);
         photoElement.setUrl("https://cornwallfilmfestival.com/wp-content/uploads/2015/11/ST6K4.jpg");
+        photoElement.setAnswer("C'est un lapin !");
         for (int i = 0; i < numOfRounds; i++) {
             photoElements.add(photoElement);
         }
         Element textElement = new Element();
         textElement.setType(ElementType.TEXT);
-        textElement.setUrl("J'ai perdu mon [...] au [...]");
+        textElement.setUrl("J'ai perdu mon [...] au [...].");
+        textElement.setAnswer("J'ai perdu mon machin au truc.");
         for (int i = 0; i < numOfRounds; i++) {
             textElements.add(textElement);
         }
@@ -254,7 +271,7 @@ public class Game {
 
     public ArrayList<String> getTransformedAnswers() {
         ArrayList<String> result = new ArrayList<>();
-        for (Answer answer: answers) {
+        for (Answer answer : answers) {
             if (answer.getType() == ElementType.TEXT) {
                 String transformedAnswer = this.currentElement.getUrl();
                 for (String part : answer.getAnswers()) {
@@ -275,5 +292,42 @@ public class Game {
     public void cancelTimer() {
         this.timer.cancel();
         this.timer.purge();
+    }
+
+    public void addVote(int answerIndex) {
+        int playerIndex = this.answers.get(answerIndex).getPlayerIndex();
+        this.votes.add(new Vote(answerIndex, playerIndex));
+    }
+
+    public Team[] processVotes() {
+        //TODO :  gérer l'égalité
+        int[] counts = new int[this.answers.size()];
+        Arrays.fill(counts, 0);
+        for (Vote vote : this.votes) {
+            counts[vote.getAnswerIndex()]++;
+        }
+        int winnerIndex = 0;
+        int fakeAnswerIndex = 0;
+        for (int i = 0; i < counts.length; i++) {
+            if (counts[i] > counts[winnerIndex]) {
+                winnerIndex = i;
+            }
+            if (this.answers.get(i).getPlayerIndex() == -1) {
+                fakeAnswerIndex = i;
+            }
+        }
+        if (winnerIndex != fakeAnswerIndex) {
+            Team winner = this.teams[(winnerIndex - 1) / this.players.length];
+            winner.setScore(winner.getScore() + 1000);
+        }
+        if (counts[fakeAnswerIndex] != 0) {
+            for (Vote vote : this.votes) {
+                if (vote.getAnswerIndex() == fakeAnswerIndex) {
+                    Team looser = this.teams[(fakeAnswerIndex - 1) / this.players.length];
+                    looser.setScore(looser.getScore() - 500);
+                }
+            }
+        }
+        return this.teams;
     }
 }

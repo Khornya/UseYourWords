@@ -6,7 +6,7 @@ import WaitingMessage from "./waitingMessage";
 import GameForm from "./gameForm";
 import WaitingRoom from "./waitingRoom";
 import GameRoom from "./gameRoom";
-import { Element, ITimerMessageContent } from "./models"
+import { Element, IEndRoundMessageContent, ITimerMessageContent } from "./models"
 import _ from "lodash-es";
 import {
   IErrorMessageContent,
@@ -32,10 +32,12 @@ class App extends React.Component {
     joinFormError: "",
     gameId: "",
     gameState: {
-      teams: ([] as Team[]),
+      teams: [] as Team[],
       element: null as Element,
       roundNumber: 0,
-      showTimer: false
+      showTimer: false,
+      answers: [] as string[],
+      displayVoteForm: false
     },
     playerIndex: -1
   };
@@ -146,6 +148,16 @@ class App extends React.Component {
           gameState: {
             ...this.state.gameState,
             showTimer: true
+          }
+        })
+        break;
+      case "END_ROUND":
+        const endRoundMessageContent = message.content as IEndRoundMessageContent
+        this.setState({
+          gameState: {
+            ...this.state.gameState,
+            answers: endRoundMessageContent.answers,
+            displayVoteForm: true
           }
         })
         break;

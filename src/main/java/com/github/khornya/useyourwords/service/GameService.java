@@ -1,8 +1,6 @@
 package com.github.khornya.useyourwords.service;
 
-import com.github.khornya.useyourwords.model.Answer;
-import com.github.khornya.useyourwords.model.Element;
-import com.github.khornya.useyourwords.model.Game;
+import com.github.khornya.useyourwords.model.*;
 import com.github.khornya.useyourwords.model.message.game.GameRoundMessageContent;
 import com.github.khornya.useyourwords.model.message.game.GameStartMessageContent;
 import com.github.khornya.useyourwords.model.message.Message;
@@ -65,7 +63,7 @@ public class GameService {
 
 	private void nextRound(Game game) {
 		String gameId = game.getId();
-		game.setCurrentElement(game.nextRound());
+		game.nextRound();
 		GameRoundMessageContent gameRoundMessageContent = new GameRoundMessageContent(game.getCurrentRoundNumber(), game.getCurrentElement());
 		Message gameRoomMessage = new Message(Message.MessageType.NEXT_ROUND, gameRoundMessageContent);
 		webSocketService.sendToRoom(gameId, gameRoomMessage);
@@ -92,7 +90,7 @@ public class GameService {
 		Game game = getGameById(gameId);
 		if (game.isAcceptAnswers()) {
 			game.addAnswer(answer);
-			if (game.getAnswers().size() == game.getPlayers().length) {
+			if (game.getAnswers().size() == game.getPlayers().length + 1) {
 				game.cancelTimer();
 				endRound(game);
 			}
@@ -105,5 +103,16 @@ public class GameService {
 		VoteMessageContent voteMessageContent = new VoteMessageContent(game.getTransformedAnswers());
 		Message gameRoomMessage = new Message(Message.MessageType.END_ROUND, voteMessageContent);
 		webSocketService.sendToRoom(game.getId(), gameRoomMessage);
+	}
+
+	public void addVote(String gameId, int answerIndex) {
+		Game game = getGameById(gameId);
+		game.addVote(answerIndex);
+		if (game.getVotes().size() == game.getPlayers().length) {
+			Team[] result = game.processVotes();
+			GameStartMessageContent gameStartMessageContent = new GameStartMessageContent(result);
+			Message gameRoomMessage = new Message(Message.MessageType.VOTES, gameStartMessageContent);
+			webSocketService.sendToRoom(game.getId(), gameRoomMessage);
+		}
 	}
 }

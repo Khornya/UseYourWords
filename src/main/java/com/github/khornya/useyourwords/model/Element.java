@@ -21,6 +21,8 @@ public class Element {
     @Enumerated(EnumType.ORDINAL)
     private ElementType type;
 
+    private String answer;
+
     public int getId() {
         return id;
     }
@@ -51,5 +53,13 @@ public class Element {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 }

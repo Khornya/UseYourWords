@@ -10,6 +10,12 @@ public class Answer {
     public Answer() {
     }
 
+    public Answer(ArrayList<String> answers, int playerIndex, ElementType type) {
+        this.answers = answers;
+        this.playerIndex = playerIndex;
+        this.type = type;
+    }
+
     public ArrayList<String> getAnswers() {
         return answers;
     }
