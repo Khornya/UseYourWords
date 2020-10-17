@@ -28,7 +28,9 @@ export interface ICreateMessagePayload {
 }
 
 export interface IAnswerMessagePayload {
-  answer: string | string[] | number
+  type: "PHOTO" | "VIDEO" | "TEXT"
+  answers: string[]
+  playerIndex: number
 }
 
 export interface IStartMessageContent {

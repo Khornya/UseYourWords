@@ -36,7 +36,8 @@ class App extends React.Component {
       element: null as Element,
       roundNumber: 0,
       showTimer: false
-    }
+    },
+    playerIndex: -1
   };
 
   componentDidMount = () => {
@@ -53,7 +54,7 @@ class App extends React.Component {
         {this.state.isWaitingToPlay && <WaitingRoom gameId={this.state.gameId} />}
         {this.state.isWaitingForConnection && <WaitingMessage />}
         {this.state.isJoining && (<GameForm joinFormError={this.state.joinFormError} />)}
-        {this.state.isPlaying && <GameRoom gameId={this.state.gameId} gameState={this.state.gameState} />}
+        {this.state.isPlaying && <GameRoom gameId={this.state.gameId} gameState={this.state.gameState} playerIndex={this.state.playerIndex} />}
       </div>
     );
   };
@@ -93,7 +94,8 @@ class App extends React.Component {
           isJoining: false,
           isWaitingToPlay: true,
           joinFormError: "",
-          gameId: joinedMessageContent.gameId
+          gameId: joinedMessageContent.gameId,
+          playerIndex: joinedMessageContent.playerIndex
         })
         break;
       case "ERROR":

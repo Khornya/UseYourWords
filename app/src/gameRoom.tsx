@@ -5,7 +5,8 @@ import Stomp from "stompjs";
 import { TeamComponent } from "./teamComponent";
 
 interface IGameRoomProps {
-  gameId: string;
+  gameId: string
+  playerIndex: number
   gameState: IGameState
 }
 
@@ -21,7 +22,7 @@ class GameRoom extends React.Component<IGameRoomProps> {
             )
           })}
         </div>
-        {this.props.gameState.roundNumber > 0 && <Round roundNumber={this.props.gameState.roundNumber} element={this.props.gameState.element} showTimer={this.props.gameState.showTimer}/>}
+        {this.props.gameState.roundNumber > 0 && <Round gameId={this.props.gameId} playerIndex={this.props.playerIndex} roundNumber={this.props.gameState.roundNumber} element={this.props.gameState.element} showTimer={this.props.gameState.showTimer}/>}
       </div>
     )
   }

@@ -1,12 +1,13 @@
 package com.github.khornya.useyourwords.service;
 
+import com.github.khornya.useyourwords.model.Answer;
 import com.github.khornya.useyourwords.model.Element;
-import com.github.khornya.useyourwords.model.ElementType;
 import com.github.khornya.useyourwords.model.Game;
 import com.github.khornya.useyourwords.model.message.game.GameRoundMessageContent;
 import com.github.khornya.useyourwords.model.message.game.GameStartMessageContent;
 import com.github.khornya.useyourwords.model.message.Message;
 import com.github.khornya.useyourwords.model.message.game.TimerMessageContent;
+import com.github.khornya.useyourwords.model.message.game.VoteMessageContent;
 import com.github.khornya.useyourwords.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,10 +65,11 @@ public class GameService {
 
 	private void nextRound(Game game) {
 		String gameId = game.getId();
-		Element element = game.nextRound();
-		GameRoundMessageContent gameRoundMessageContent = new GameRoundMessageContent(game.getCurrentRoundNumber(), element);
+		game.setCurrentElement(game.nextRound());
+		GameRoundMessageContent gameRoundMessageContent = new GameRoundMessageContent(game.getCurrentRoundNumber(), game.getCurrentElement());
 		Message gameRoomMessage = new Message(Message.MessageType.NEXT_ROUND, gameRoundMessageContent);
 		webSocketService.sendToRoom(gameId, gameRoomMessage);
+		game.setAcceptAnswers(true);
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			@Override
@@ -80,16 +82,28 @@ public class GameService {
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				Message gameRoomMessage = new Message(Message.MessageType.END_ROUND, null);
-				webSocketService.sendToRoom(gameId, gameRoomMessage);
-				askForVotes(game);
+				endRound(game);
 			}
 		}, 60 * 1000);
+		game.setTimer(timer);
 	}
 
-	private void askForVotes(Game game) {
-
+	public void addAnswer(String gameId, Answer answer) {
+		Game game = getGameById(gameId);
+		if (game.isAcceptAnswers()) {
+			game.addAnswer(answer);
+			if (game.getAnswers().size() == game.getPlayers().length) {
+				game.cancelTimer();
+				endRound(game);
+			}
+		}
 	}
 
-
+	private void endRound(Game game) {
+		game.shuffleAnswers();
+		game.setAcceptAnswers(false);
+		VoteMessageContent voteMessageContent = new VoteMessageContent(game.getTransformedAnswers());
+		Message gameRoomMessage = new Message(Message.MessageType.END_ROUND, voteMessageContent);
+		webSocketService.sendToRoom(game.getId(), gameRoomMessage);
+	}
 }

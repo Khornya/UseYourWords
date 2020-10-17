@@ -33,10 +33,13 @@ public class Game {
     private Team[] teams;
     private int numOfRounds;
     private int currentRoundNumber = 0;
-
+    private ArrayList<Answer> answers = new ArrayList<>();
     private Set<String> readyPlayers = new HashSet<>();
     private AtomicInteger joinCount = new AtomicInteger(0);
     private ArrayList<Element> elements;
+    private Element currentElement;
+    private boolean acceptAnswers = false;
+    private Timer timer;
 
     public Game() {
         this.id = UUID.randomUUID().toString();
@@ -152,6 +155,46 @@ public class Game {
         this.readyPlayers = readyPlayers;
     }
 
+    public ArrayList<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(ArrayList<Answer> answers) {
+        this.answers = answers;
+    }
+
+    public ArrayList<Element> getElements() {
+        return elements;
+    }
+
+    public void setElements(ArrayList<Element> elements) {
+        this.elements = elements;
+    }
+
+    public Element getCurrentElement() {
+        return currentElement;
+    }
+
+    public void setCurrentElement(Element currentElement) {
+        this.currentElement = currentElement;
+    }
+
+    public boolean isAcceptAnswers() {
+        return acceptAnswers;
+    }
+
+    public void setAcceptAnswers(boolean acceptAnswers) {
+        this.acceptAnswers = acceptAnswers;
+    }
+
+    public Timer getTimer() {
+        return timer;
+    }
+
+    public void setTimer(Timer timer) {
+        this.timer = timer;
+    }
+
     public int addPlayer(Player player) {
         int i;
         for (i = 0; i < players.length; i++) {
@@ -203,5 +246,34 @@ public class Game {
             elements.add(videoElements.remove(random.nextInt(videoElements.size())));
             elements.add(textElements.remove(random.nextInt(textElements.size())));
         }
+    }
+
+    public void addAnswer(Answer answer) {
+        this.answers.add(answer);
+    }
+
+    public ArrayList<String> getTransformedAnswers() {
+        ArrayList<String> result = new ArrayList<>();
+        for (Answer answer: answers) {
+            if (answer.getType() == ElementType.TEXT) {
+                String transformedAnswer = this.currentElement.getUrl();
+                for (String part : answer.getAnswers()) {
+                    transformedAnswer = transformedAnswer.replace("[...]", part);
+                }
+                result.add(transformedAnswer);
+            } else {
+                result.add(answer.getAnswers().get(0));
+            }
+        }
+        return result;
+    }
+
+    public void shuffleAnswers() {
+        Collections.shuffle(this.answers);
+    }
+
+    public void cancelTimer() {
+        this.timer.cancel();
+        this.timer.purge();
     }
 }

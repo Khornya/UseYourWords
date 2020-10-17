@@ -5,6 +5,8 @@ import { stompClient } from "./stompClient"
 import $ from "jquery";
 
 interface IRoundProps {
+    gameId: string
+    playerIndex: number
     roundNumber: number
     element: Element
     showTimer: boolean
@@ -63,9 +65,12 @@ export class Round extends React.Component<IRoundProps> {
 
     private submitForm = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        let input = $("input[name=response]").val()
         const payload: IAnswerMessagePayload = {
-            answer: $("input[name=response]").val()
+            type: this.props.element.type,
+            answers: Array.isArray(input) ? input : [input as string],
+            playerIndex: this.props.playerIndex
         };
-        stompClient.send(`/app/answer`, {}, JSON.stringify(payload));
+        stompClient.send(`/app/answer/${this.props.gameId}`, {}, JSON.stringify(payload));
     }
 }

@@ -1,6 +1,6 @@
 package com.github.khornya.useyourwords.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.khornya.useyourwords.model.Answer;
 import com.github.khornya.useyourwords.model.Game;
 import com.github.khornya.useyourwords.model.message.player.GameCreationMessage;
 import com.github.khornya.useyourwords.model.message.player.PlayerReadyMessage;
@@ -27,7 +27,7 @@ public class PlayerWebSocketController {
 	private GameIdGenerator gameIdGenerator;
 
 	@MessageMapping("/join/{gameId}/{name}")
-	public void join(@Header("simpSessionId") String sessionId, @DestinationVariable(value = "gameId") String gameId, @DestinationVariable(value = "name") String name) throws JsonProcessingException {
+	public void join(@Header("simpSessionId") String sessionId, @DestinationVariable(value = "gameId") String gameId, @DestinationVariable(value = "name") String name) {
 		playerService.addPlayer(sessionId, gameId, name);
 	}
 
@@ -45,5 +45,10 @@ public class PlayerWebSocketController {
 	@MessageMapping("/ready")
 	public void ready(@Header("simpSessionId") String sessionId, @Payload PlayerReadyMessage message) {
 		playerService.ready(sessionId, message.getGameId());
+	}
+
+	@MessageMapping("/answer/{gameId}")
+	public void answer(@Header("simpSessionId") String sessionId, @DestinationVariable(value = "gameId") String gameId, @Payload Answer answer) {
+		gameService.addAnswer(gameId, answer);
 	}
 }
