@@ -1,7 +1,7 @@
 import * as React from "react";
 import "./App.css";
-import $ from "jquery";
 import Stomp, { Frame } from "stompjs";
+import { stompClient, initStompClient } from "./stompClient";
 import WaitingMessage from "./waitingMessage";
 import GameForm from "./gameForm";
 import WaitingRoom from "./waitingRoom";
@@ -21,7 +21,6 @@ import {
 
 
 class App extends React.Component {
-  private stompClient: Stomp.Client;
   private stompPlayerSubscription: Stomp.Subscription;
   private stompGameSubscription: Stomp.Subscription;
 
@@ -32,15 +31,17 @@ class App extends React.Component {
     isPlaying: false,
     joinFormError: "",
     gameId: "",
-    teams: ([] as Team[]),
-    element: null as Element,
-    roundNumber: 0,
-    showTimer: false
+    gameState: {
+      teams: ([] as Team[]),
+      element: null as Element,
+      roundNumber: 0,
+      showTimer: false
+    }
   };
 
   componentDidMount = () => {
-    this.stompClient = Stomp.client("ws://localhost:8080/sock");
-    this.stompClient.connect({}, this.onConnected, this.onError);
+    initStompClient("ws://localhost:8080/sock");
+    stompClient.connect({}, this.onConnected, this.onError);
   };
 
   render = () => {
@@ -51,13 +52,8 @@ class App extends React.Component {
         </div>
         {this.state.isWaitingToPlay && <WaitingRoom gameId={this.state.gameId} />}
         {this.state.isWaitingForConnection && <WaitingMessage />}
-        {this.state.isJoining && (
-          <GameForm
-            stompClient={this.stompClient}
-            joinFormError={this.state.joinFormError}
-          />
-        )}
-        {this.state.isPlaying && <GameRoom gameId={this.state.gameId} teams={this.state.teams} element={this.state.element} roundNumber={this.state.roundNumber} showTimer={this.state.showTimer}/>}
+        {this.state.isJoining && (<GameForm joinFormError={this.state.joinFormError} />)}
+        {this.state.isPlaying && <GameRoom gameId={this.state.gameId} gameState={this.state.gameState} />}
       </div>
     );
   };
@@ -68,7 +64,7 @@ class App extends React.Component {
       isWaitingForConnection: false,
       isJoining: true,
     });
-    this.stompPlayerSubscription = this.stompClient.subscribe(
+    this.stompPlayerSubscription = stompClient.subscribe(
       `/user/queue/reply`,
       this.onPlayerMessageReceived
     );
@@ -88,11 +84,11 @@ class App extends React.Component {
       case "JOINED":
         const joinedMessageContent = message.content as IJoinedMessageContent;
         console.log(`You joined game ${joinedMessageContent.gameId}`);
-        this.stompGameSubscription = this.stompClient.subscribe(
+        this.stompGameSubscription = stompClient.subscribe(
           `/game-room/${joinedMessageContent.gameId}`,
           this.onGameMessageReceived
         )
-        this.stompClient.send(`/app/ready`, {}, JSON.stringify(joinedMessageContent))
+        stompClient.send(`/app/ready`, {}, JSON.stringify(joinedMessageContent))
         this.setState({
           isJoining: false,
           isWaitingToPlay: true,
@@ -122,7 +118,10 @@ class App extends React.Component {
         this.setState({
           isWaitingToPlay: false,
           isPlaying: true,
-          teams: (message.content as IStartMessageContent).teams
+          gameState: {
+            ...this.state.gameState,
+            teams: (message.content as IStartMessageContent).teams
+          }
         })
         break;
       case "PLAYER_JOINED":
@@ -132,16 +131,22 @@ class App extends React.Component {
       case "NEXT_ROUND":
         const gameRoundMessageContent = message.content as IGameRoundMessageContent
         this.setState({
-          roundNumber: gameRoundMessageContent.roundNumber,
-          element: gameRoundMessageContent.element
+          gameState: {
+            ...this.state.gameState,
+            roundNumber: gameRoundMessageContent.roundNumber,
+            element: gameRoundMessageContent.element
+          }
         })
         break;
       case "TIMER":
-      const timerMessageContent = message.content as ITimerMessageContent
-      this.setState({
-        showTimer: true
-      })
-      break;
+        const timerMessageContent = message.content as ITimerMessageContent
+        this.setState({
+          gameState: {
+            ...this.state.gameState,
+            showTimer: true
+          }
+        })
+        break;
       default:
         console.log(message)
     }

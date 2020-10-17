@@ -1,10 +1,9 @@
 import * as React from "react";
 import $ from "jquery";
-import Stomp from "stompjs";
+import { stompClient} from "./stompClient";
 import { ICreateMessagePayload } from "./models";
 
 interface IGameFormProps {
-  stompClient: Stomp.Client;
   joinFormError: string;
 }
 
@@ -128,7 +127,7 @@ class GameForm extends React.Component<IGameFormProps> {
     let name = $("#name").val();
     if (this.state.isJoinForm) {
       let gameId = $("#gameId").val().toString();
-      this.props.stompClient.send(`/app/join/${gameId}/${name}`, {});
+      stompClient.send(`/app/join/${gameId}/${name}`, {});
     } else {
       let numOfPlayers = $("#numOfPlayers").val();
       let numOfTeams = $("#numOfTeams").val();
@@ -139,7 +138,7 @@ class GameForm extends React.Component<IGameFormProps> {
         numOfTeams: parseInt(numOfTeams.toString()),
         numOfRounds: parseInt(numOfRounds.toString()),
       };
-      this.props.stompClient.send(`/app/create`, {}, JSON.stringify(payload));
+      stompClient.send(`/app/create`, {}, JSON.stringify(payload));
     }
   };
 }

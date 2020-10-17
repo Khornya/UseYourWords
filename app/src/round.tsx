@@ -1,6 +1,8 @@
 import React from "react";
-import { Element } from "./models"
+import { Element, IAnswerMessagePayload } from "./models"
 import { Timer } from "./timer";
+import { stompClient } from "./stompClient"
+import $ from "jquery";
 
 interface IRoundProps {
     roundNumber: number
@@ -10,18 +12,19 @@ interface IRoundProps {
 
 export class Round extends React.Component<IRoundProps> {
     render = () => {
-        console.log("elementType", this.props.element.type)
         const textParts = this.props.element.url.split("[...]")
-        const input = <input required type="text" className="form-control" name="response" placeholder="..." />
+        let input = (index: number) => {
+            return <input required key={index} type="text" className="form-control" name="response" placeholder="..." />
+        }
         return (
             <div className="round">
                 <h2>Round n°{this.props.roundNumber}</h2>
-                {this.props.showTimer && <Timer duration={10}/>}
+                {this.props.showTimer && <Timer duration={10} />}
                 <form
                     id="roundForm"
                     name="roundForm"
                     className="w-20 mx-auto"
-                // onSubmit={this.submitForm}
+                onSubmit={this.submitForm}
                 >
                     {{
                         "PHOTO": <div className="form-group">
@@ -36,12 +39,12 @@ export class Round extends React.Component<IRoundProps> {
                             <div className="element">
                                 {textParts.map((textPart, index) => {
                                     if (textPart === "") {
-                                        return input
+                                        return input(index)
                                     } else if (index === textParts.length - 1) {
-                                        return <p>{textPart}</p>
+                                        return <p key={index}>{textPart}</p>
                                     } else {
                                         return (
-                                            <span>
+                                            <span key={index}>
                                                 <p>{textPart}</p>
                                                 {input}
                                             </span>)
@@ -50,8 +53,19 @@ export class Round extends React.Component<IRoundProps> {
                             </div>
                         </div>
                     }[this.props.element.type]}
+                    <button type="submit" className="btn btn-primary">
+                        Answer
+                    </button>
                 </form>
             </div>
         )
+    }
+
+    private submitForm = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const payload: IAnswerMessagePayload = {
+            answer: $("input[name=response]").val()
+        };
+        stompClient.send(`/app/answer`, {}, JSON.stringify(payload));
     }
 }

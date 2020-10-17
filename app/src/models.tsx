@@ -27,6 +27,10 @@ export interface ICreateMessagePayload {
   numOfRounds: number;
 }
 
+export interface IAnswerMessagePayload {
+  answer: string | string[] | number
+}
+
 export interface IStartMessageContent {
   teams: Team[]
 }
@@ -57,4 +61,11 @@ export interface Element {
   name: string
   url: string
   type: "PHOTO" | "VIDEO" | "TEXT"
+}
+
+export interface IGameState {
+  teams: Team[]
+  element: Element
+  roundNumber: number
+  showTimer: boolean
 }
