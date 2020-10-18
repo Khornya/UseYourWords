@@ -2,6 +2,7 @@ package com.github.khornya.useyourwords.controller;
 
 import com.github.khornya.useyourwords.model.Answer;
 import com.github.khornya.useyourwords.model.Game;
+import com.github.khornya.useyourwords.model.Player;
 import com.github.khornya.useyourwords.model.Vote;
 import com.github.khornya.useyourwords.model.message.player.GameCreationMessage;
 import com.github.khornya.useyourwords.model.message.player.PlayerReadyMessage;
@@ -54,7 +55,7 @@ public class PlayerWebSocketController {
 	}
 
 	@MessageMapping("/vote/{gameId}/{answerIndex}")
-	public void vote(@DestinationVariable(value = "gameId") String gameId, @DestinationVariable(value = "answerIndex") int answerIndex) {
-		gameService.addVote(gameId, answerIndex);
+	public void vote(@Header("simpSessionId") String sessionId, @DestinationVariable(value = "gameId") String gameId, @DestinationVariable(value = "answerIndex") int answerIndex) {
+		gameService.addVote(gameId, answerIndex, sessionId);
 	}
 }

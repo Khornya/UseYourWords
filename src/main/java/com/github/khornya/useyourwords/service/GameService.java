@@ -105,9 +105,9 @@ public class GameService {
 		webSocketService.sendToRoom(game.getId(), gameRoomMessage);
 	}
 
-	public void addVote(String gameId, int answerIndex) {
+	public void addVote(String gameId, int answerIndex, String sessionId) {
 		Game game = getGameById(gameId);
-		game.addVote(answerIndex);
+		game.addVote(answerIndex, sessionId);
 		if (game.getVotes().size() == game.getPlayers().length) {
 			Team[] result = game.processVotes();
 			GameStartMessageContent gameStartMessageContent = new GameStartMessageContent(result);

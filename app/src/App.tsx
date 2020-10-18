@@ -97,7 +97,7 @@ class App extends React.Component {
           isWaitingToPlay: true,
           joinFormError: "",
           gameId: joinedMessageContent.gameId,
-          playerIndex: joinedMessageContent.playerIndex
+          playerIndex: joinedMessageContent.index
         })
         break;
       case "ERROR":

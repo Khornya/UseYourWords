@@ -12,7 +12,8 @@ export interface IErrorMessageContent extends IMessageContent {
 
 export interface IJoinedMessageContent extends IMessageContent {
   gameId: string;
-  playerIndex: number
+  index: number
+  name: string
 }
 
 export interface IPlayerJoinedMessageContent extends IMessageContent {

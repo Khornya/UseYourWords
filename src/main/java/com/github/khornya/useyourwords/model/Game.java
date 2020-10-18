@@ -294,38 +294,44 @@ public class Game {
         this.timer.purge();
     }
 
-    public void addVote(int answerIndex) {
-        int playerIndex = this.answers.get(answerIndex).getPlayerIndex();
-        this.votes.add(new Vote(answerIndex, playerIndex));
+    public void addVote(int answerIndex, String sessionId) {
+        int teamIndex = 0;
+        for (int i = 0; i < this.teams.length; i++) {
+            for (Player player : this.teams[i].getPlayers() ) {
+                if (player.getSessionId().equals(sessionId)) {
+                    teamIndex = i;
+                }
+            }
+        }
+        this.votes.add(new Vote(answerIndex, teamIndex));
     }
 
     public Team[] processVotes() {
-        //TODO :  gérer l'égalité
         int[] counts = new int[this.answers.size()];
         Arrays.fill(counts, 0);
         for (Vote vote : this.votes) {
             counts[vote.getAnswerIndex()]++;
         }
-        int winnerIndex = 0;
+        int max = 0;
         int fakeAnswerIndex = 0;
         for (int i = 0; i < counts.length; i++) {
-            if (counts[i] > counts[winnerIndex]) {
-                winnerIndex = i;
+            if (counts[i] > max) {
+                max = counts[i];
             }
             if (this.answers.get(i).getPlayerIndex() == -1) {
                 fakeAnswerIndex = i;
             }
         }
-        if (winnerIndex != fakeAnswerIndex) {
-            Team winner = this.teams[(winnerIndex - 1) / this.players.length];
-            winner.setScore(winner.getScore() + 1000);
+        for (Vote vote : this.votes) {
+            if (vote.getAnswerIndex() == fakeAnswerIndex) {
+                Team looser = this.teams[vote.getTeamIndex()];
+                looser.setScore(looser.getScore() - 500);
+            }
         }
-        if (counts[fakeAnswerIndex] != 0) {
-            for (Vote vote : this.votes) {
-                if (vote.getAnswerIndex() == fakeAnswerIndex) {
-                    Team looser = this.teams[(fakeAnswerIndex - 1) / this.players.length];
-                    looser.setScore(looser.getScore() - 500);
-                }
+        for (int i = 0; i < this.answers.size(); i++) {
+            if (counts[i] == max && i != fakeAnswerIndex) {
+                Team winner = this.teams[this.answers.get(i).getPlayerIndex() / this.teams[0].getPlayers().length];
+                winner.setScore(winner.getScore() + 1000);
             }
         }
         return this.teams;

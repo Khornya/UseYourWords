@@ -2,11 +2,11 @@ package com.github.khornya.useyourwords.model;
 
 public class Vote {
     private int answerIndex;
-    private int playerIndex;
+    private int teamIndex;
 
-    public Vote(int answerIndex, int playerIndex) {
+    public Vote(int answerIndex, int teamIndex) {
         this.answerIndex = answerIndex;
-        this.playerIndex = playerIndex;
+        this.teamIndex = teamIndex;
     }
 
     public int getAnswerIndex() {
@@ -17,11 +17,11 @@ public class Vote {
         this.answerIndex = answerIndex;
     }
 
-    public int getPlayerIndex() {
-        return playerIndex;
+    public int getTeamIndex() {
+        return teamIndex;
     }
 
-    public void setPlayerIndex(int playerIndex) {
-        this.playerIndex = playerIndex;
+    public void setTeamIndex(int teamIndex) {
+        this.teamIndex = teamIndex;
     }
 }
