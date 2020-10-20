@@ -10,6 +10,7 @@ interface IRoundProps {
     roundNumber: number
     element: Element
     showTimer: boolean
+    displayAnswerForm: boolean
 }
 
 export class Round extends React.Component<IRoundProps> {
@@ -20,14 +21,14 @@ export class Round extends React.Component<IRoundProps> {
     render = () => {
         const textParts = this.props.element.url.split("[...]")
         let input = (index: number) => {
-            return <input required key={index} type="text" className="form-control" name="response" placeholder="..." />
+            return <input required key={index} type="text" className="form-control" name="response" placeholder="Type something funny here" />
         }
         return (
             <div className="round">
                 <h2>Round n°{this.props.roundNumber}</h2>
                 {this.props.showTimer && <Timer duration={10} />}
 
-                <form
+                {this.props.displayAnswerForm && <form
                     id="roundForm"
                     name="roundForm"
                     className="w-20 mx-auto"
@@ -63,7 +64,7 @@ export class Round extends React.Component<IRoundProps> {
                     {this.state.showSubmitButton ? <button type="submit" className="btn btn-primary">
                         Answer
                     </button> : <div className="waitingMessage">Please wait for the other players ...</div>}
-                </form>
+                </form> }
             </div>
         )
     }

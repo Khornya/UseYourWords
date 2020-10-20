@@ -11,6 +11,7 @@ public class Team {
     protected int defaultNumOfPlayers;
     private int maxNumOfPlayers;
     private Player[] players;
+    private int number;
     private int score = 0;
     private int scoreDiff = 0;
 
@@ -19,9 +20,10 @@ public class Team {
         this.players = new Player[defaultNumOfPlayers];
     }
 
-    public Team(int numOfPlayers) {
+    public Team(int numOfPlayers, int number) {
         this.maxNumOfPlayers = numOfPlayers;
         this.players = new Player[numOfPlayers];
+        this.number = number;
     }
 
     public Player[] getPlayers() {
@@ -46,6 +48,14 @@ public class Team {
 
     public void setMaxNumOfPlayers(int maxNumOfPlayers) {
         this.maxNumOfPlayers = maxNumOfPlayers;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public int getScoreDiff() {

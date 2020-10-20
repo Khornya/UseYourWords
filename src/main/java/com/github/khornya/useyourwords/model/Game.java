@@ -47,7 +47,7 @@ public class Game {
         this.players = new Player[defaultNumOfPlayers];
         this.teams = new Team[defaultNumOfTeams];
         for (int i = 0; i < teams.length; i++) {
-            teams[i] = new Team(defaultNumOfPlayers / defaultNumOfTeams);
+            teams[i] = new Team(defaultNumOfPlayers / defaultNumOfTeams, i);
         }
         this.numOfRounds = defaultNumOfRounds;
         initializeElements();
@@ -58,7 +58,7 @@ public class Game {
         this.players = new Player[numOfPlayers];
         this.teams = new Team[numOfTeams];
         for (int i = 0; i < teams.length; i++) {
-            teams[i] = new Team(numOfPlayers / numOfTeams);
+            teams[i] = new Team(numOfPlayers / numOfTeams, i);
         }
         this.numOfRounds = numOfRounds;
         initializeElements();

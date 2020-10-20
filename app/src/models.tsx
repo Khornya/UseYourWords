@@ -59,7 +59,9 @@ export interface Team {
   maxNumOfPlayers: number,
   currentNumOfPlayers: number,
   score: number,
+  scoreDiff: number,
   players: Player[]
+  number: number
 }
 
 export interface Player {
@@ -79,6 +81,9 @@ export interface IGameState {
   element: Element
   roundNumber: number
   showTimer: boolean
+  displayAnswerForm: boolean
   displayVoteForm: boolean
+  displayVoteResult: boolean
   answers: string[]
+  gameOver: boolean
 }

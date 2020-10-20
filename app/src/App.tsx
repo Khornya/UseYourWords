@@ -37,8 +37,10 @@ class App extends React.Component {
       roundNumber: 0,
       showTimer: false,
       answers: [] as string[],
+      displayAnswerForm: true,
       displayVoteForm: false,
-      displayVoteResult: false
+      displayVoteResult: false,
+      gameOver: false
     },
     playerIndex: -1,
     playerAnswerIndex: -1
@@ -146,7 +148,8 @@ class App extends React.Component {
             ...this.state.gameState,
             roundNumber: gameRoundMessageContent.roundNumber,
             element: gameRoundMessageContent.element,
-            displayVoteResult: false
+            displayVoteResult: false,
+            displayAnswerForm: true
           }
         })
         break;
@@ -165,7 +168,8 @@ class App extends React.Component {
           gameState: {
             ...this.state.gameState,
             answers: endRoundMessageContent.answers,
-            displayVoteForm: true
+            displayVoteForm: true,
+            displayAnswerForm: false
           }
         })
         break;
@@ -174,8 +178,19 @@ class App extends React.Component {
           gameState: {
             ...this.state.gameState,
             teams: (message.content as IStartMessageContent).teams,
+            displayAnswerForm: false,
             displayVoteForm: false,
             displayVoteResult: true
+          }
+        })
+        break;
+      case "GAME_OVER":
+        this.setState({
+          gameState: {
+            ...this.state.gameState,
+            teams: (message.content as IStartMessageContent).teams,
+            displayVoteResult: false,
+            gameOver: true
           }
         })
       default:
