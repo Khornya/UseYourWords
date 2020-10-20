@@ -18,6 +18,12 @@ export class Round extends React.Component<IRoundProps> {
         showSubmitButton: true
     }
 
+    componentWillReceiveProps = () => {
+        this.setState({
+            showSubmitButton: true
+        })
+    }
+
     render = () => {
         const textParts = this.props.element.url.split("[...]")
         let input = (index: number) => {
@@ -25,27 +31,25 @@ export class Round extends React.Component<IRoundProps> {
         }
         return (
             <div className="round">
-                <h2>Round n°{this.props.roundNumber}</h2>
-                {this.props.showTimer && <Timer duration={10} />}
 
-                {this.props.displayAnswerForm && <form
+                <h3>Round {this.props.roundNumber}</h3>
+                <form
                     id="roundForm"
                     name="roundForm"
-                    className="w-20 mx-auto"
                     onSubmit={this.submitForm}
                 >
                     {{
                         "PHOTO": <div className="form-group">
-                            <img src={this.props.element.url} alt={this.props.element.name} />
-                            <input required type="text" className="form-control" name="response" placeholder="Type a funny subtitle here" />
+                            <img className="element" src={this.props.element.url} alt={this.props.element.name} />
+                            {this.props.displayAnswerForm && <input required type="text" className="form-control" name="response" placeholder="Type a funny subtitle here" />}
                         </div>,
                         "VIDEO": <div className="form-group">
-                            <iframe title="videoFrame" width="560" height="315" src={this.props.element.url} frameBorder="0" allowFullScreen></iframe>
-                            <input required type="text" className="form-control" name="response" placeholder="Type a funny subtitle here" />
+                            <iframe className="element" title="videoFrame" width="560" height="315" src={this.props.element.url} frameBorder="0" allowFullScreen></iframe>
+                            {this.props.displayAnswerForm && <input required type="text" className="form-control" name="response" placeholder="Type a funny subtitle here" />}
                         </div>,
                         "TEXT": <div className="form-group">
                             <div className="element">
-                                {textParts.map((textPart, index) => {
+                                {this.props.displayAnswerForm ? textParts.map((textPart, index) => {
                                     if (textPart === "") {
                                         return input(index)
                                     } else if (index === textParts.length - 1) {
@@ -57,14 +61,22 @@ export class Round extends React.Component<IRoundProps> {
                                                 {input(index)}
                                             </span>)
                                     }
-                                })}
+                                }) : <p>{this.props.element.url}</p>}
                             </div>
                         </div>
                     }[this.props.element.type]}
-                    {this.state.showSubmitButton ? <button type="submit" className="btn btn-primary">
-                        Answer
-                    </button> : <div className="waitingMessage">Please wait for the other players ...</div>}
-                </form> }
+                    {this.props.displayAnswerForm && this.state.showSubmitButton &&
+                        <div className="submitWithTimer">
+                            <button type="submit" className="btn btn-primary">
+                                Answer
+                            </button>
+                            {this.props.showTimer && <Timer duration={10} />}
+                        </div>
+                    }
+                    {this.props.displayAnswerForm && !this.state.showSubmitButton &&
+                        <div className="waitingMessage alert alert-primary" role="alert">Please wait for the other players ...</div>
+                    }    
+                </form>
             </div>
         )
     }
@@ -72,7 +84,7 @@ export class Round extends React.Component<IRoundProps> {
     private submitForm = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         this.setState({ showSubmitButton: false })
-        let input = $("input[name=response]").map(function(){return $(this).val().toString();}).get();
+        let input = $("input[name=response]").map(function () { return $(this).val().toString(); }).get();
         const payload: IAnswerMessagePayload = {
             type: this.props.element.type,
             answers: input,

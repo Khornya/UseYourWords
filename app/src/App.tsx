@@ -23,6 +23,7 @@ import {
 class App extends React.Component {
   private stompPlayerSubscription: Stomp.Subscription;
   private stompGameSubscription: Stomp.Subscription;
+  private waitingForConnectionMessage: string = "Please wait while connecting to the server ..."
 
   state = {
     isWaitingForConnection: true,
@@ -53,13 +54,13 @@ class App extends React.Component {
 
   render = () => {
     return (
-      <div className="app d-flex justify-content-center flex-column">
-        <div className="banner d-flex justify-content-center">
+      <div className="app">
+        <div className="banner">
           <h1>Use Your Words</h1>
         </div>
         {this.state.isWaitingToPlay && <WaitingRoom gameId={this.state.gameId} />}
-        {this.state.isWaitingForConnection && <WaitingMessage />}
-        {this.state.isJoining && (<GameForm joinFormError={this.state.joinFormError} />)}
+        {this.state.isWaitingForConnection && <WaitingMessage message={this.waitingForConnectionMessage}/>}
+        {this.state.isJoining && <GameForm joinFormError={this.state.joinFormError} />}
         {this.state.isPlaying && <GameRoom gameId={this.state.gameId} gameState={this.state.gameState} playerIndex={this.state.playerIndex} playerAnswerIndex={this.state.playerAnswerIndex}/>}
       </div>
     );

@@ -44,7 +44,7 @@ class GameForm extends React.Component<IGameFormProps> {
         <form
           id="gameForm"
           name="gameForm"
-          className="w-20 mx-auto"
+          className=""
           onSubmit={this.submitForm}
         >
           <div className="form-group">

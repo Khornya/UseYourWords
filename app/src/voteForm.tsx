@@ -20,7 +20,6 @@ export class VoteForm extends React.Component<IVoteForm> {
                     <form
                         id="voteForm"
                         name="voteForm"
-                        className="w-20 mx-auto"
                         onSubmit={this.submitForm}
                     >
                         {this.props.answers.map((answer, index) => {
@@ -42,7 +41,7 @@ export class VoteForm extends React.Component<IVoteForm> {
                                 Vote
                             </button>
                         :
-                            <div className="waitingMessage">Please wait for the other players ...</div>}
+                            <div className="waitingMessage alert alert-primary" role="alert">Please wait for the other players ...</div>}
                     </form>
                 </div>
             </div>
