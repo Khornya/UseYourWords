@@ -1,5 +1,5 @@
 export interface IMessage {
-  type: "ERROR" | "JOINED" | "PLAYER_JOINED" | "START" | "PLAYER_LEFT" | "GAME_OVER" | "NEXT_ROUND" | "TIMER" | "END_ROUND" | "VOTES";
+  type: "ERROR" | "JOINED" | "PLAYER_JOINED" | "START" | "PLAYER_LEFT" | "GAME_OVER" | "NEXT_ROUND" | "TIMER" | "END_ROUND" | "VOTES" | "HIDE_ANSWER";
   content: IMessageContent;
 }
 
@@ -14,6 +14,10 @@ export interface IJoinedMessageContent extends IMessageContent {
   gameId: string;
   index: number
   name: string
+}
+
+export interface IHideAnswerMessageContent extends IMessageContent {
+  answerIndex: number
 }
 
 export interface IPlayerJoinedMessageContent extends IMessageContent {

@@ -7,6 +7,7 @@ import { VoteForm } from "./voteForm";
 interface IGameRoomProps {
   gameId: string
   playerIndex: number
+  playerAnswerIndex: number
   gameState: IGameState
 }
 
@@ -23,7 +24,7 @@ class GameRoom extends React.Component<IGameRoomProps> {
           })}
         </div>
         {this.props.gameState.roundNumber > 0 && !this.props.gameState.displayVoteForm && <Round gameId={this.props.gameId} playerIndex={this.props.playerIndex} roundNumber={this.props.gameState.roundNumber} element={this.props.gameState.element} showTimer={this.props.gameState.showTimer}/>}
-        {this.props.gameState.displayVoteForm && <VoteForm gameId={this.props.gameId} answers={this.props.gameState.answers}/>}
+        {this.props.gameState.displayVoteForm && <VoteForm gameId={this.props.gameId} answers={this.props.gameState.answers} playerAnswerIndex={this.props.playerAnswerIndex} />}
       </div>
     )
   }

@@ -6,7 +6,7 @@ import WaitingMessage from "./waitingMessage";
 import GameForm from "./gameForm";
 import WaitingRoom from "./waitingRoom";
 import GameRoom from "./gameRoom";
-import { Element, IEndRoundMessageContent, ITimerMessageContent } from "./models"
+import { Element, IEndRoundMessageContent, IHideAnswerMessageContent, ITimerMessageContent } from "./models"
 import _ from "lodash-es";
 import {
   IErrorMessageContent,
@@ -40,7 +40,8 @@ class App extends React.Component {
       displayVoteForm: false,
       displayVoteResult: false
     },
-    playerIndex: -1
+    playerIndex: -1,
+    playerAnswerIndex: -1
   };
 
   componentDidMount = () => {
@@ -57,7 +58,7 @@ class App extends React.Component {
         {this.state.isWaitingToPlay && <WaitingRoom gameId={this.state.gameId} />}
         {this.state.isWaitingForConnection && <WaitingMessage />}
         {this.state.isJoining && (<GameForm joinFormError={this.state.joinFormError} />)}
-        {this.state.isPlaying && <GameRoom gameId={this.state.gameId} gameState={this.state.gameState} playerIndex={this.state.playerIndex} />}
+        {this.state.isPlaying && <GameRoom gameId={this.state.gameId} gameState={this.state.gameState} playerIndex={this.state.playerIndex} playerAnswerIndex={this.state.playerAnswerIndex}/>}
       </div>
     );
   };
@@ -108,6 +109,11 @@ class App extends React.Component {
         );
         this.setState({
           joinFormError: (content as IErrorMessageContent).message,
+        });
+        break;
+      case "HIDE_ANSWER":
+        this.setState({
+          playerAnswerIndex: (content as IHideAnswerMessageContent).answerIndex
         });
         break;
       default:

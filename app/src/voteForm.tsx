@@ -5,6 +5,7 @@ import $ from "jquery";
 interface IVoteForm {
     gameId: string
     answers: string[]
+    playerAnswerIndex: number
 }
 
 export class VoteForm extends React.Component<IVoteForm> {
@@ -23,14 +24,18 @@ export class VoteForm extends React.Component<IVoteForm> {
                         onSubmit={this.submitForm}
                     >
                         {this.props.answers.map((answer, index) => {
-                            return (
-                                <div key={index}>
-                                    <input className="form-check-input" type="radio" name="answer" id={index.toString()} value={index} required />
-                                    <label className="form-check-label" htmlFor="answer">
-                                        {answer}
-                                    </label>
-                                </div>
-                            )
+                            if (this.props.playerAnswerIndex !== index) {
+                                return (
+                                    <div key={index}>
+                                        <input className="form-check-input" type="radio" name="answer" id={index.toString()} value={index} required />
+                                        <label className="form-check-label" htmlFor="answer">
+                                            {answer}
+                                        </label>
+                                    </div>
+                                )
+                            } else {
+                                return null
+                            }
                         })}
                         {this.state.showSubmitButton ?
                             <button type="submit" className="btn btn-primary">

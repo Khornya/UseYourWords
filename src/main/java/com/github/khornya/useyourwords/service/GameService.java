@@ -6,6 +6,7 @@ import com.github.khornya.useyourwords.model.message.game.GameStartMessageConten
 import com.github.khornya.useyourwords.model.message.Message;
 import com.github.khornya.useyourwords.model.message.game.TimerMessageContent;
 import com.github.khornya.useyourwords.model.message.game.VoteMessageContent;
+import com.github.khornya.useyourwords.model.message.player.HideAnswerMessageContent;
 import com.github.khornya.useyourwords.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -107,6 +108,16 @@ public class GameService {
 		VoteMessageContent voteMessageContent = new VoteMessageContent(game.getTransformedAnswers());
 		Message gameRoomMessage = new Message(Message.MessageType.END_ROUND, voteMessageContent);
 		webSocketService.sendToRoom(game.getId(), gameRoomMessage);
+		ArrayList<Answer> answers = game.getAnswers();
+		for (int i = 0; i < answers.size(); i++) {
+			int playerIndex = answers.get(i).getPlayerIndex();
+			if (playerIndex != -1) {
+				String sessionId = game.getPlayers()[playerIndex].getSessionId();
+				HideAnswerMessageContent hideAnswerMessageContent = new HideAnswerMessageContent(i);
+				Message playerMessage = new Message(Message.MessageType.HIDE_ANSWER, hideAnswerMessageContent);
+				webSocketService.replyToUser(sessionId, playerMessage);
+			}
+		}
 	}
 
 	private void endGame(Game game) {

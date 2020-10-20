@@ -39,7 +39,7 @@ export class Round extends React.Component<IRoundProps> {
                             <input required type="text" className="form-control" name="response" placeholder="Type a funny subtitle here" />
                         </div>,
                         "VIDEO": <div className="form-group">
-                            <iframe width="560" height="315" src={this.props.element.url} frameBorder="0" allowFullScreen></iframe>
+                            <iframe title="videoFrame" width="560" height="315" src={this.props.element.url} frameBorder="0" allowFullScreen></iframe>
                             <input required type="text" className="form-control" name="response" placeholder="Type a funny subtitle here" />
                         </div>,
                         "TEXT": <div className="form-group">
