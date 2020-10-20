@@ -307,6 +307,10 @@ public class Game {
     }
 
     public Team[] processVotes() {
+        int[] oldScores = new int[this.teams.length];
+        for (int i = 0; i < this.teams.length; i++) {
+            oldScores[i] = this.teams[i].getScore();
+        }
         int[] counts = new int[this.answers.size()];
         Arrays.fill(counts, 0);
         for (Vote vote : this.votes) {
@@ -333,6 +337,9 @@ public class Game {
                 Team winner = this.teams[this.answers.get(i).getPlayerIndex() / this.teams[0].getPlayers().length];
                 winner.setScore(winner.getScore() + 1000);
             }
+        }
+        for (int i = 0; i < this.teams.length; i++) {
+            this.teams[i].setScoreDiff(this.teams[i].getScore() - oldScores[i]);
         }
         return this.teams;
     }

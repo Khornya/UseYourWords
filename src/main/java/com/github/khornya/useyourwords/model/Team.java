@@ -12,6 +12,7 @@ public class Team {
     private int maxNumOfPlayers;
     private Player[] players;
     private int score = 0;
+    private int scoreDiff = 0;
 
     public Team() {
         this.maxNumOfPlayers = defaultNumOfPlayers;
@@ -45,6 +46,14 @@ public class Team {
 
     public void setMaxNumOfPlayers(int maxNumOfPlayers) {
         this.maxNumOfPlayers = maxNumOfPlayers;
+    }
+
+    public int getScoreDiff() {
+        return scoreDiff;
+    }
+
+    public void setScoreDiff(int scoreDiff) {
+        this.scoreDiff = scoreDiff;
     }
 
     public int getCurrentNumOfPlayers() {
