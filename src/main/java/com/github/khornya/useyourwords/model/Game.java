@@ -237,7 +237,7 @@ public class Game {
         List<Element> textElements = new ArrayList<>();
         Element videoElement = new Element();
         videoElement.setType(ElementType.VIDEO);
-        videoElement.setUrl("https://www.youtube.com/watch?v=AioVDsXidh0");
+        videoElement.setUrl("https://www.youtube.com/embed/AioVDsXidh0");
         videoElement.setAnswer("Suck kut : \"ce serait mieux si ça coupait pas !\"");
         for (int i = 0; i < numOfRounds; i++) {
             videoElements.add(videoElement);
@@ -272,10 +272,10 @@ public class Game {
     public ArrayList<String> getTransformedAnswers() {
         ArrayList<String> result = new ArrayList<>();
         for (Answer answer : answers) {
-            if (answer.getType() == ElementType.TEXT) {
+            if (answer.getType() == ElementType.TEXT && answer.getPlayerIndex() != -1) {
                 String transformedAnswer = this.currentElement.getUrl();
                 for (String part : answer.getAnswers()) {
-                    transformedAnswer = transformedAnswer.replace("[...]", part);
+                    transformedAnswer = transformedAnswer.replaceFirst("\\[\\.\\.\\.\\]", part);
                 }
                 result.add(transformedAnswer);
             } else {
@@ -297,7 +297,7 @@ public class Game {
     public void addVote(int answerIndex, String sessionId) {
         int teamIndex = 0;
         for (int i = 0; i < this.teams.length; i++) {
-            for (Player player : this.teams[i].getPlayers() ) {
+            for (Player player : this.teams[i].getPlayers()) {
                 if (player.getSessionId().equals(sessionId)) {
                     teamIndex = i;
                 }

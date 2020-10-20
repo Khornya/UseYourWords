@@ -1,5 +1,5 @@
 export interface IMessage {
-  type: "ERROR" | "JOINED" | "PLAYER_JOINED" | "START" | "PLAYER_LEFT" | "GAME_OVER" | "NEXT_ROUND" | "TIMER" | "END_ROUND";
+  type: "ERROR" | "JOINED" | "PLAYER_JOINED" | "START" | "PLAYER_LEFT" | "GAME_OVER" | "NEXT_ROUND" | "TIMER" | "END_ROUND" | "VOTES";
   content: IMessageContent;
 }
 

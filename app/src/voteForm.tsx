@@ -25,7 +25,7 @@ export class VoteForm extends React.Component<IVoteForm> {
                         {this.props.answers.map((answer, index) => {
                             return (
                                 <div key={index}>
-                                    <input className="form-check-input" type="radio" name="answer" id={index.toString()} value={index} />
+                                    <input className="form-check-input" type="radio" name="answer" id={index.toString()} value={index} required />
                                     <label className="form-check-label" htmlFor="answer">
                                         {answer}
                                     </label>

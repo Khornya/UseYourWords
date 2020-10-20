@@ -63,27 +63,31 @@ public class GameService {
 
 	private void nextRound(Game game) {
 		String gameId = game.getId();
-		game.nextRound();
-		GameRoundMessageContent gameRoundMessageContent = new GameRoundMessageContent(game.getCurrentRoundNumber(), game.getCurrentElement());
-		Message gameRoomMessage = new Message(Message.MessageType.NEXT_ROUND, gameRoundMessageContent);
-		webSocketService.sendToRoom(gameId, gameRoomMessage);
-		game.setAcceptAnswers(true);
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				TimerMessageContent timerMessageContent = new TimerMessageContent(10);
-				Message gameRoomMessage = new Message(Message.MessageType.TIMER, timerMessageContent);
-				webSocketService.sendToRoom(gameId, gameRoomMessage);
-			}
-		}, 50 * 1000);
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				endRound(game);
-			}
-		}, 60 * 1000);
-		game.setTimer(timer);
+		if (game.getCurrentRoundNumber() == game.getNumOfRounds()) {
+			endGame(game);
+		} else {
+			game.nextRound();
+			GameRoundMessageContent gameRoundMessageContent = new GameRoundMessageContent(game.getCurrentRoundNumber(), game.getCurrentElement());
+			Message gameRoomMessage = new Message(Message.MessageType.NEXT_ROUND, gameRoundMessageContent);
+			webSocketService.sendToRoom(gameId, gameRoomMessage);
+			game.setAcceptAnswers(true);
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					TimerMessageContent timerMessageContent = new TimerMessageContent(10);
+					Message gameRoomMessage = new Message(Message.MessageType.TIMER, timerMessageContent);
+					webSocketService.sendToRoom(gameId, gameRoomMessage);
+				}
+			}, 50 * 1000);
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					endRound(game);
+				}
+			}, 60 * 1000);
+			game.setTimer(timer);
+		}
 	}
 
 	public void addAnswer(String gameId, Answer answer) {
@@ -105,6 +109,13 @@ public class GameService {
 		webSocketService.sendToRoom(game.getId(), gameRoomMessage);
 	}
 
+	private void endGame(Game game) {
+		//TODO: envoyer les scores en BDD
+		GameStartMessageContent gameStartMessageContent = new GameStartMessageContent(game.getTeams());
+		Message gameRoomMessage = new Message(Message.MessageType.GAME_OVER, gameStartMessageContent);
+		webSocketService.sendToRoom(game.getId(), gameRoomMessage);
+	}
+
 	public void addVote(String gameId, int answerIndex, String sessionId) {
 		Game game = getGameById(gameId);
 		game.addVote(answerIndex, sessionId);
@@ -113,6 +124,13 @@ public class GameService {
 			GameStartMessageContent gameStartMessageContent = new GameStartMessageContent(result);
 			Message gameRoomMessage = new Message(Message.MessageType.VOTES, gameStartMessageContent);
 			webSocketService.sendToRoom(game.getId(), gameRoomMessage);
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					nextRound(game);
+				}
+			}, 10 * 1000);
 		}
 	}
 }

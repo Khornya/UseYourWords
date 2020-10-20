@@ -39,7 +39,7 @@ export class Round extends React.Component<IRoundProps> {
                             <input required type="text" className="form-control" name="response" placeholder="Type a funny subtitle here" />
                         </div>,
                         "VIDEO": <div className="form-group">
-                            <video src={this.props.element.url} />
+                            <iframe width="560" height="315" src={this.props.element.url} frameBorder="0" allowFullScreen></iframe>
                             <input required type="text" className="form-control" name="response" placeholder="Type a funny subtitle here" />
                         </div>,
                         "TEXT": <div className="form-group">
@@ -53,7 +53,7 @@ export class Round extends React.Component<IRoundProps> {
                                         return (
                                             <span key={index}>
                                                 <p>{textPart}</p>
-                                                {input}
+                                                {input(index)}
                                             </span>)
                                     }
                                 })}
@@ -71,10 +71,10 @@ export class Round extends React.Component<IRoundProps> {
     private submitForm = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         this.setState({ showSubmitButton: false })
-        let input = $("input[name=response]").val()
+        let input = $("input[name=response]").map(function(){return $(this).val().toString();}).get();
         const payload: IAnswerMessagePayload = {
             type: this.props.element.type,
-            answers: Array.isArray(input) ? input : [input as string],
+            answers: input,
             playerIndex: this.props.playerIndex
         };
         stompClient.send(`/app/answer/${this.props.gameId}`, {}, JSON.stringify(payload));
