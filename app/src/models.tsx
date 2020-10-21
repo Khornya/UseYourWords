@@ -81,6 +81,7 @@ export interface IGameState {
   element: Element
   roundNumber: number
   showTimer: boolean
+  timerDuration: number
   displayAnswerForm: boolean
   displayVoteForm: boolean
   displayVoteResult: boolean

@@ -17,15 +17,15 @@ class GameRoom extends React.Component<IGameRoomProps> {
   render = () => {
     return (
       <div className="game-room">
-        <div className="teams">
+        {!this.props.gameState.gameOver && <div className="teams">
           {this.props.gameState.teams.map((team, index) => {
             return (
-              <TeamComponent team={team} number={index + 1} key={index} displayScoreDiff={false}/>
+              <TeamComponent team={team} number={index + 1} key={index} displayScoreDiff={false} displayPlayers={true}/>
             )
           })}
-        </div>
-        {this.props.gameState.roundNumber > 0 && <Round gameId={this.props.gameId} playerIndex={this.props.playerIndex} roundNumber={this.props.gameState.roundNumber} element={this.props.gameState.element} showTimer={this.props.gameState.showTimer} displayAnswerForm={this.props.gameState.displayAnswerForm}/>}
-        {this.props.gameState.displayVoteForm && <VoteForm gameId={this.props.gameId} answers={this.props.gameState.answers} playerAnswerIndex={this.props.playerAnswerIndex} />}
+        </div>}
+        {this.props.gameState.roundNumber > 0 && !this.props.gameState.gameOver && <Round gameId={this.props.gameId} playerIndex={this.props.playerIndex} playerAnswerIndex={this.props.playerAnswerIndex} gameState={this.props.gameState}/>}
+        <div className="rightColumn"></div>
         {this.props.gameState.displayVoteResult && <VoteResult teams={this.props.gameState.teams} />}
         {this.props.gameState.gameOver && <GameResult teams={this.props.gameState.teams} />}
       </div>

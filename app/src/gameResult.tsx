@@ -13,11 +13,13 @@ export class GameResult extends React.Component<IGameResultProps> {
         const winners = this.props.teams.filter((team) => { return team.score === max })
         return (
             <div className="gameResult">
-                <h1>Team{winners.length === 1 ? `${(winners[0].number + 1).toString()}` : `s ${this.formatTeamNumbers(winners)} won !`}</h1>
-                {this.props.teams.map((team, index) => {
-                    return (<TeamComponent team={team} number={index + 1} key={index} displayScoreDiff={false} />)
-                })}
-            <a href={`${proxy}/home`} className="btn btn-primary" role="button">Back to main page</a>
+                <h1>Team{winners.length === 1 ? ` ${(winners[0].number + 1).toString()} won !` : `s ${this.formatTeamNumbers(winners)} won !`}</h1>
+                <div className="gameResultTeams">
+                    {this.props.teams.map((team, index) => {
+                        return (<TeamComponent team={team} number={index + 1} key={index} displayScoreDiff={false} displayPlayers={true} />)
+                    })}
+                </div>
+                <a href={`${proxy}/home`} className="btn btn-primary" role="button">Back to main page</a>
             </div>
         )
     }

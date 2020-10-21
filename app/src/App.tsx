@@ -37,6 +37,7 @@ class App extends React.Component {
       element: null as Element,
       roundNumber: 0,
       showTimer: false,
+      timerDuration: 0,
       answers: [] as string[],
       displayAnswerForm: true,
       displayVoteForm: false,
@@ -150,8 +151,10 @@ class App extends React.Component {
             roundNumber: gameRoundMessageContent.roundNumber,
             element: gameRoundMessageContent.element,
             displayVoteResult: false,
-            displayAnswerForm: true
-          }
+            displayAnswerForm: true,
+            showTimer: false,
+          },
+          playerAnswerIndex: -1
         })
         break;
       case "TIMER":
@@ -159,7 +162,8 @@ class App extends React.Component {
         this.setState({
           gameState: {
             ...this.state.gameState,
-            showTimer: true
+            showTimer: true,
+            timerDuration: timerMessageContent.secondsLeft
           }
         })
         break;
