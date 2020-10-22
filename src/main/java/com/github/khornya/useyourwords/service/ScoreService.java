@@ -2,8 +2,9 @@ package com.github.khornya.useyourwords.service;
 
 import com.github.khornya.useyourwords.dao.IScoreRepository;
 import com.github.khornya.useyourwords.exceptions.ScoreNotFoundException;
-import com.github.khornya.useyourwords.models.Score;
+import com.github.khornya.useyourwords.model.Score;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +15,8 @@ public class ScoreService {
     @Autowired
     private IScoreRepository daoScore;
 
-    public List<Score> findAll() {
-        return this.daoScore.findAll();
+    public List<Score> findAllOrderByScoreDescending() {
+        return this.daoScore.findAll(Sort.by(Sort.Direction.DESC, "SCORE"));
     }
 
     public Score findById(int id) {
@@ -24,10 +25,6 @@ public class ScoreService {
 
     public Score save(Score score) {
         return this.daoScore.save(score);
-    }
-
-    public void add(Score score) {
-        this.daoScore.save(score);
     }
 
     public void deleteById(int id) {

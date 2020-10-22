@@ -2,8 +2,8 @@ package com.github.khornya.useyourwords.controller;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.github.khornya.useyourwords.models.Element;
-import com.github.khornya.useyourwords.models.ElementType;
+import com.github.khornya.useyourwords.model.Element;
+import com.github.khornya.useyourwords.model.ElementType;
 import com.github.khornya.useyourwords.service.ElementService;
 
 import org.springframework.beans.factory.annotation.Autowired;

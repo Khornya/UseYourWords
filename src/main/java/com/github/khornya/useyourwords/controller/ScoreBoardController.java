@@ -16,7 +16,7 @@ public class ScoreBoardController {
 
     @GetMapping("")
     public String findAll(Model model) {
-        model.addAttribute("scores", this.srvScore.findAll());
+        model.addAttribute("scores", this.srvScore.findAllOrderByScoreDescending());
 
         return "scoreBoard/scoreBoard";
     }
