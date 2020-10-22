@@ -22,6 +22,9 @@ public class GameService {
 	@Autowired
 	private WebSocketService webSocketService;
 
+	@Autowired
+	private ScoreService scoreService;
+
 	public void addGame(String gameId, Game game) {
 		gameRepository.addGame(gameId, game);
 	}
@@ -121,7 +124,11 @@ public class GameService {
 	}
 
 	private void endGame(Game game) {
-		//TODO: envoyer les scores en BDD
+		for (Team team : game.getTeams()) {
+			for (Player player : team.getPlayers()) {
+				scoreService.add(new Score(player.getName(), team.getScore(), new Date(System.currentTimeMillis() / 1000)));
+			}
+		}
 		GameStartMessageContent gameStartMessageContent = new GameStartMessageContent(game.getTeams());
 		Message gameRoomMessage = new Message(Message.MessageType.GAME_OVER, gameStartMessageContent);
 		webSocketService.sendToRoom(game.getId(), gameRoomMessage);

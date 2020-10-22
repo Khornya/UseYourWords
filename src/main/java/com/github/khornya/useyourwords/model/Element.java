@@ -2,26 +2,33 @@ package com.github.khornya.useyourwords.model;
 
 import javax.persistence.*;
 
-@Entity // ANNOTATION OBLIGATOIRE POUR UNE ENTITE
+@Entity
 @Table(name = "ELEMENT")
 public class Element {
 
-    @Id // ANNOTATION OBLIGATOIRE - ID NECESSAIRE
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // AUTO_INCREMENT
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ELEMENT_ID")
     private int id;
 
     @Column(name = "ELEMENT_NAME", length = 200)
     private String name;
 
+    @Column(name = "ELEMENT_TOFILLTEXT", length = 500)
+    private String toFillText;
+
     @Column(name = "ELEMENT_URL", length = 500)
     private String url;
+
+    @Column(name = "ELEMENT_DEFAULTRESPONSE", length = 500)
+    private String defaultResponse;
 
     @Column(name = "ELEMENT_TYPE", length = 10)
     @Enumerated(EnumType.ORDINAL)
     private ElementType type;
 
-    private String answer;
+    @Column(name = "ELEMENT_UUID", length = 500)
+    private String uuid;
 
     public int getId() {
         return id;
@@ -55,11 +62,27 @@ public class Element {
         this.url = url;
     }
 
-    public String getAnswer() {
-        return answer;
+    public String getToFillText() {
+        return toFillText;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setToFillText(String toFillText) {
+        this.toFillText = toFillText;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getDefaultResponse() {
+        return defaultResponse;
+    }
+
+    public void setDefaultResponse(String defaultResponse) {
+        this.defaultResponse = defaultResponse;
     }
 }

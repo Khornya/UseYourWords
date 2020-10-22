@@ -49,7 +49,7 @@ class App extends React.Component {
   };
 
   componentDidMount = () => {
-    initStompClient(`${proxy.replace("http", "ws)}/sock`);
+    initStompClient(`${proxy.replace("http", "ws")}/sock`);
     stompClient.connect({}, this.onConnected, this.onError);
   };
 

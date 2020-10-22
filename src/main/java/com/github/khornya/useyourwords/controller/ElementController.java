@@ -2,8 +2,8 @@ package com.github.khornya.useyourwords.controller;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.github.khornya.useyourwords.models.Element;
-import com.github.khornya.useyourwords.models.ElementType;
+import com.github.khornya.useyourwords.model.Element;
+import com.github.khornya.useyourwords.model.ElementType;
 import com.github.khornya.useyourwords.service.ElementService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,6 +102,12 @@ public class ElementController {
     public String update(@RequestParam int id, Model model) throws IOException {
         Element elementToEdit = new Element() ;
         elementToEdit.setName(this.srvElement.findById(id).getName());
+        elementToEdit.setDefaultResponse(this.srvElement.findById(id).getDefaultResponse());
+        if(this.srvElement.findById(id).getType() == ElementType.TEXT)
+        {
+            elementToEdit.setToFillText(this.srvElement.findById(id).getToFillText());
+        }
+
         model.addAttribute("element", elementToEdit);
         deleteById(id);
 

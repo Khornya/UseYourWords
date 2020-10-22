@@ -1,11 +1,16 @@
 package com.github.khornya.useyourwords.model;
 
+import com.github.khornya.useyourwords.service.ElementService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Game {
+
+    @Autowired
+    private ElementService elementService;
 
     /**
      * max number of player of each room. Change by
@@ -215,50 +220,34 @@ public class Game {
         return i;
     }
 
-    @Override
-    public String toString() {
-        return "Game [id=" + id + ", players=" + Arrays.toString(players) + ", readyPlayerSet=" + readyPlayers + ", joinCount=" + joinCount + "]";
-    }
-
     public void nextRound() {
         currentRoundNumber++;
         this.answers = new ArrayList<>();
         this.votes = new ArrayList<>();
         this.currentElement = elements.remove(0);
         ArrayList<String> predefinedAnswerAsArray = new ArrayList<>();
-        predefinedAnswerAsArray.add(this.currentElement.getAnswer());
+        predefinedAnswerAsArray.add(this.currentElement.getDefaultResponse());
         this.answers.add(new Answer(predefinedAnswerAsArray, -1, this.currentElement.getType()));
     }
 
     private void initializeElements() {
-        //TODO : get elements from repository
         List<Element> videoElements = new ArrayList<>();
         List<Element> photoElements = new ArrayList<>();
         List<Element> textElements = new ArrayList<>();
-        Element videoElement = new Element();
-        videoElement.setType(ElementType.VIDEO);
-        videoElement.setUrl("https://res.cloudinary.com/ddkztxv3q/video/upload/v1603289350/Best_of_la_cit%C3%A9_de_la_peur_p19wqg.mp4");
-        videoElement.setAnswer("Aucun lien, je suis fils unique.");
-        for (int i = 0; i < numOfRounds; i++) {
-            videoElements.add(videoElement);
+        for (int i = 0; i < numOfRounds / 3; i++) {
+            videoElements.add(elementService.findRandomElementByType(ElementType.VIDEO));
         }
-        Element photoElement = new Element();
-        photoElement.setType(ElementType.PHOTO);
-        photoElement.setUrl("https://cornwallfilmfestival.com/wp-content/uploads/2015/11/ST6K4.jpg");
-        photoElement.setAnswer("C'est un lapin !");
-        for (int i = 0; i < numOfRounds; i++) {
-            photoElements.add(photoElement);
+
+        for (int i = 0; i < numOfRounds / 3; i++) {
+            photoElements.add(elementService.findRandomElementByType(ElementType.PHOTO));
         }
-        Element textElement = new Element();
-        textElement.setType(ElementType.TEXT);
-        textElement.setUrl("J'ai perdu mon [...] au [...].");
-        textElement.setAnswer("J'ai perdu mon machin au truc.");
-        for (int i = 0; i < numOfRounds; i++) {
-            textElements.add(textElement);
+
+        for (int i = 0; i < numOfRounds / 3; i++) {
+            textElements.add(elementService.findRandomElementByType(ElementType.TEXT));
         }
         Random random = new Random();
         elements = new ArrayList<>();
-        for (int i = 0; i < numOfRounds; i++) {
+        for (int i = 0; i < numOfRounds / 3; i++) {
             elements.add(photoElements.remove(random.nextInt(photoElements.size())));
             elements.add(videoElements.remove(random.nextInt(videoElements.size())));
             elements.add(textElements.remove(random.nextInt(textElements.size())));
@@ -342,5 +331,10 @@ public class Game {
             this.teams[i].setScoreDiff(this.teams[i].getScore() - oldScores[i]);
         }
         return this.teams;
+    }
+
+    @Override
+    public String toString() {
+        return "Game [id=" + id + ", players=" + Arrays.toString(players) + ", readyPlayerSet=" + readyPlayers + ", joinCount=" + joinCount + "]";
     }
 }
