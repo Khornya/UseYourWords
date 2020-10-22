@@ -1,0 +1,23 @@
+#homeBackground
+{
+    background-image:url("img/background.jpg");
+    background-repeat: no-repeat;
+}
+
+#homeAdminBackground
+{
+    background-image:url("img/background.jpg");
+    background-repeat: no-repeat;
+}
+
+#scoreBackground
+{
+    background-image:url("img/background.jpg");
+    background-repeat: no-repeat;
+}
+
+#titleElement
+{
+    color:#FFFFFF;
+    font-weight: bold;
+}
