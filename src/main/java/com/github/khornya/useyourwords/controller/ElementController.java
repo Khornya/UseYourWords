@@ -102,6 +102,12 @@ public class ElementController {
     public String update(@RequestParam int id, Model model) throws IOException {
         Element elementToEdit = new Element() ;
         elementToEdit.setName(this.srvElement.findById(id).getName());
+        elementToEdit.setDefaultResponse(this.srvElement.findById(id).getDefaultResponse());
+        if(this.srvElement.findById(id).getType() == ElementType.TEXT)
+        {
+            elementToEdit.setToFillText(this.srvElement.findById(id).getToFillText());
+        }
+
         model.addAttribute("element", elementToEdit);
         deleteById(id);
 
