@@ -16,7 +16,7 @@ public class ScoreService {
     private IScoreRepository daoScore;
 
     public List<Score> findAllOrderByScoreDescending() {
-        return this.daoScore.findAll(Sort.by(Sort.Direction.DESC, "SCORE"));
+        return this.daoScore.findAll(Sort.by(Sort.Direction.DESC, "score"));
     }
 
     public Score findById(int id) {
