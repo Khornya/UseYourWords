@@ -20,6 +20,9 @@ public class Element {
     @Column(name = "ELEMENT_URL", length = 500)
     private String url;
 
+    @Column(name = "ELEMENT_DEFAULTRESPONSE", length = 500)
+    private String defaultResponse;
+
     @Column(name = "ELEMENT_TYPE", length = 10)
     @Enumerated(EnumType.ORDINAL)
     private ElementType type;
@@ -73,5 +76,13 @@ public class Element {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public String getDefaultResponse() {
+        return defaultResponse;
+    }
+
+    public void setDefaultResponse(String defaultResponse) {
+        this.defaultResponse = defaultResponse;
     }
 }
