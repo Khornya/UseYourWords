@@ -18,7 +18,7 @@ import {
   IStartMessageContent,
   Team,
 } from "./models";
-
+import { proxy } from "../package.json"
 
 class App extends React.Component {
   private stompPlayerSubscription: Stomp.Subscription;
@@ -49,7 +49,7 @@ class App extends React.Component {
   };
 
   componentDidMount = () => {
-    initStompClient("ws://localhost:8080/sock");
+    initStompClient(`${proxy.replace("http", "ws)}/sock`);
     stompClient.connect({}, this.onConnected, this.onError);
   };
 
