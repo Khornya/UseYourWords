@@ -18,11 +18,8 @@ public class Score {
     @Column(name = "SCORE_SCORE")
     private int score;
 
-    @Column(name = "SCORE_DATELASTGAME")
-    private Date lastGame;
-
-    @Column(name = "ELEMENT_TOTALGAME")
-    private int totalGame;
+    @Column(name = "SCORE_DATE")
+    private Date date;
 
     public int getId() {
         return id;
@@ -48,19 +45,11 @@ public class Score {
         this.score = score;
     }
 
-    public Date getLastGame() {
-        return lastGame;
+    public Date getDate() {
+        return date;
     }
 
-    public void setLastGame(Date lastGame) {
-        this.lastGame = lastGame;
-    }
-
-    public int getTotalGame() {
-        return totalGame;
-    }
-
-    public void setTotalGame(int totalGame) {
-        this.totalGame = totalGame;
+    public void setDate(Date date) {
+        this.date = date;
     }
 }
