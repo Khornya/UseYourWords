@@ -2,7 +2,7 @@ package com.github.khornya.useyourwords.service;
 
 import com.github.khornya.useyourwords.dao.IElementRepository;
 import com.github.khornya.useyourwords.exceptions.ElementNotFoundException;
-import com.github.khornya.useyourwords.models.Element;
+import com.github.khornya.useyourwords.model.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

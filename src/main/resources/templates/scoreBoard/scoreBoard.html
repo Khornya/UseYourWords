@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Use Your Words - Main Menu</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body id="scoreBackground">
+<div class="row">
+    <div class="col-md-12">
+        <nav class="nav nav-pills bg-secondary p-1">
+            <a class="nav-link text-white" href="/home">Accueil</a>
+            <a class="nav-link text-white" href="http://localhost:3000">Jouer !</a>
+            <a class="nav-link text-white active nav-item" href="/scoreboard">Tableau des scores</a>
+            <a class="nav-link text-white" href="/element/home">Admin</a>
+        </nav>
+    </div>
+</div>
+
+    <center><h1 class="text-light">Tableau des scores</h1></center>
+    <table class="table table-hover bg-white">
+
+        <thead>
+        <tr>
+            <th>
+                NOM
+            </th>
+            <th>
+                DATE
+            </th>
+            <th>
+                SCORE
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr th:each="score : ${ scores }" class="table-active">
+
+            <td>
+                [[ ${ score.playerName } ]]
+            </td>
+            <td>
+                [[ ${ score.date } ]]
+            </td>
+            <td>
+                [[ ${ score.score } ]]
+            </td>
+            
+        </tr>
+
+        </tbody>
+
+    </table>
+</body>
+</html>
