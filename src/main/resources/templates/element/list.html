@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Use Your Words - Liste Des Éléments</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <base href="/"/>
+</head>
+
+<body>
+
+<div class="row">
+    <div class="col-md-12">
+        <nav class="nav nav-pills bg-secondary p-1">
+            <a class="nav-link text-white" href="/home">Accueil</a>
+            <a class="nav-link text-white" href="/element/home">Admin</a>
+            <a class="nav-link text-white" href="/element/ajouter">Ajouter</a>
+            <a class="nav-link text-white active nav-item" href="/element/liste">Liste des éléments</a>
+        </nav>
+    </div>
+</div>
+
+<center><h1>Liste des éléments</h1></center>
+<table class="table table-hover">
+
+    <thead>
+    <tr>
+        <th>
+            ID
+        </th>
+        <th>
+            APERÇU
+        </th>
+        <th>
+            TEXTE
+        </th>
+        <th>
+            NOM
+        </th>
+        <th>
+            TYPE
+        </th>
+        <th>
+            ACTION
+        </th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    <tr th:each="element : ${ elements }" class="table-active">
+
+        <td>
+            [[ ${ element.id } ]]
+        </td>
+        <td>
+            <iframe width="auto" height="auto" th:src="${ element.url }" frameborder="0" allowfullscreen></iframe>
+        </td>
+        <td>
+            [[ ${ element.toFillText } ]]
+        </td>
+        <td>
+            [[ ${ element.name } ]]
+        </td>
+        <td>
+            [[ ${ element.type } ]]
+        </td>
+        <td>
+            <a th:href="@{ element/supprimer/{id}(id=${ element.id }) }" class="btn btn-primary m-1">Supprimer</a>
+            <a th:href="@{ element/editer(id=${ element.id }) }" class="btn btn-primary m-1">Editer</a>
+        </td>
+
+    </tr>
+
+    </tbody>
+
+</table>
+</body>
