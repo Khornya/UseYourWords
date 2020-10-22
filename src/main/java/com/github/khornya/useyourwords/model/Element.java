@@ -1,4 +1,4 @@
-package com.github.khornya.useyourwords.models;
+package com.github.khornya.useyourwords.model;
 
 import javax.persistence.*;
 
