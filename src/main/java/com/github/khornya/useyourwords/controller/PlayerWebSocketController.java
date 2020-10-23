@@ -1,10 +1,8 @@
 package com.github.khornya.useyourwords.controller;
 
-import com.github.khornya.useyourwords.exceptions.ElementNotFoundException;
+import com.github.khornya.useyourwords.exception.ElementNotFoundException;
 import com.github.khornya.useyourwords.model.Answer;
 import com.github.khornya.useyourwords.model.Game;
-import com.github.khornya.useyourwords.model.Player;
-import com.github.khornya.useyourwords.model.Vote;
 import com.github.khornya.useyourwords.model.message.Message;
 import com.github.khornya.useyourwords.model.message.player.ErrorCode;
 import com.github.khornya.useyourwords.model.message.player.ErrorMessageContent;
