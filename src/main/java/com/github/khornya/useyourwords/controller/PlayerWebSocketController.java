@@ -6,6 +6,7 @@ import com.github.khornya.useyourwords.model.Player;
 import com.github.khornya.useyourwords.model.Vote;
 import com.github.khornya.useyourwords.model.message.player.GameCreationMessage;
 import com.github.khornya.useyourwords.model.message.player.PlayerReadyMessage;
+import com.github.khornya.useyourwords.service.ElementService;
 import com.github.khornya.useyourwords.service.GameService;
 import com.github.khornya.useyourwords.service.PlayerService;
 import com.github.khornya.useyourwords.utils.GameIdGenerator;
@@ -26,6 +27,9 @@ public class PlayerWebSocketController {
 	private GameService gameService;
 
 	@Autowired
+	private ElementService elementService;
+
+	@Autowired
 	private GameIdGenerator gameIdGenerator;
 
 	@MessageMapping("/join/{gameId}/{name}")
@@ -39,7 +43,7 @@ public class PlayerWebSocketController {
 		do {
 			gameId = gameIdGenerator.get();
 		} while (gameService.getGameById(gameId) != null);
-		Game game = new Game(gameId, message.getNumOfPlayers(), message.getNumOfTeams(), message.getNumOfRounds());
+		Game game = new Game(elementService, gameId, message.getNumOfPlayers(), message.getNumOfTeams(), message.getNumOfRounds());
 		gameService.addGame(gameId, game);
 		playerService.addPlayer(sessionId, gameId, message.getName());
 	}

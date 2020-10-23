@@ -25,6 +25,8 @@ public class GameService {
 	@Autowired
 	private ScoreService scoreService;
 
+	@Autowired ElementService elementService;
+
 	public void addGame(String gameId, Game game) {
 		gameRepository.addGame(gameId, game);
 	}

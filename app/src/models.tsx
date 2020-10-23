@@ -73,6 +73,7 @@ export interface Element {
   id: number
   name: string
   url: string
+  toFillText: string
   type: "PHOTO" | "VIDEO" | "TEXT"
 }
 

@@ -24,7 +24,7 @@ export class Round extends React.Component<IRoundProps> {
     }
 
     render = () => {
-        const textParts = this.props.gameState.element.url.split("[...]")
+        const textParts = this.props.gameState.element.toFillText?.split("[...]")
         let input = (index: number) => {
             return <input required key={index} type="text" className="form-control" name="response" placeholder="..." />
         }
@@ -48,18 +48,19 @@ export class Round extends React.Component<IRoundProps> {
                         </div>,
                         "TEXT": <div className="form-group">
                             <div className="element text">
-                                {this.props.gameState.displayAnswerForm ? textParts.map((textPart, index) => {
+                                {this.props.gameState.displayAnswerForm ? textParts?.map((textPart, index) => {
                                     if (textPart === "") {
                                         return input(index)
-                                    } else if (index === textParts.length - 1) {
-                                        return <p key={index}>{textPart}</p>
                                     } else {
-                                        return (
-                                            <span className="textPartGroup"key={index}>
-                                                <p>{textPart}</p>
-                                                {input(index)}
-                                            </span>)
+                                        return <p key={index}>{textPart}</p>
                                     }
+                                    // } else {
+                                    //     return (
+                                    //         <span className="textPartGroup"key={index}>
+                                    //             <p>{textPart}</p>
+                                    //             {input(index)}
+                                    //         </span>)
+                                    // }
                                 }) : <p>{this.props.gameState.element.url}</p>}
                             </div>
                         </div>

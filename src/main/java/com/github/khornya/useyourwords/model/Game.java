@@ -1,7 +1,6 @@
 package com.github.khornya.useyourwords.model;
 
 import com.github.khornya.useyourwords.service.ElementService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.*;
@@ -9,30 +8,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Game {
 
-    @Autowired
-    private ElementService elementService;
-
-    /**
-     * max number of player of each room. Change by
-     * websocket.gameroom.config.numof.rounds property.
-     */
     @Value(value = "${websocket.gameroom.config.numof.rounds}")
     protected int defaultNumOfRounds;
 
-    /**
-     * max number of player of each room. Change by
-     * websocket.gameroom.config.numof.player property.
-     */
     @Value(value = "${websocket.gameroom.config.numof.player}")
     protected int defaultNumOfPlayers;
 
-    /**
-     * max number of player of each room. Change by
-     * websocket.gameroom.config.numof.teams property.
-     */
     @Value(value = "${websocket.gameroom.config.numof.teams}")
     protected int defaultNumOfTeams;
 
+    private ElementService elementService;
     private String id;
     private Player[] players;
     private Team[] teams;
@@ -47,7 +32,8 @@ public class Game {
     private boolean acceptAnswers = false;
     private Timer timer;
 
-    public Game() {
+    public Game(ElementService elementService) {
+        this.elementService = elementService;
         this.id = UUID.randomUUID().toString();
         this.players = new Player[defaultNumOfPlayers];
         this.teams = new Team[defaultNumOfTeams];
@@ -58,7 +44,8 @@ public class Game {
         initializeElements();
     }
 
-    public Game(String id, int numOfPlayers, int numOfTeams, int numOfRounds) {
+    public Game(ElementService elementService, String id, int numOfPlayers, int numOfTeams, int numOfRounds) {
+        this.elementService = elementService;
         this.id = id;
         this.players = new Player[numOfPlayers];
         this.teams = new Team[numOfTeams];
@@ -237,11 +224,9 @@ public class Game {
         for (int i = 0; i < numOfRounds / 3; i++) {
             videoElements.add(elementService.findRandomElementByType(ElementType.VIDEO));
         }
-
         for (int i = 0; i < numOfRounds / 3; i++) {
             photoElements.add(elementService.findRandomElementByType(ElementType.PHOTO));
         }
-
         for (int i = 0; i < numOfRounds / 3; i++) {
             textElements.add(elementService.findRandomElementByType(ElementType.TEXT));
         }
@@ -262,7 +247,7 @@ public class Game {
         ArrayList<String> result = new ArrayList<>();
         for (Answer answer : answers) {
             if (answer.getType() == ElementType.TEXT && answer.getPlayerIndex() != -1) {
-                String transformedAnswer = this.currentElement.getUrl();
+                String transformedAnswer = this.currentElement.getToFillText();
                 for (String part : answer.getAnswers()) {
                     transformedAnswer = transformedAnswer.replaceFirst("\\[\\.\\.\\.\\]", part);
                 }
