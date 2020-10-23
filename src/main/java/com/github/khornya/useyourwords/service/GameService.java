@@ -8,6 +8,8 @@ import com.github.khornya.useyourwords.model.message.game.TimerMessageContent;
 import com.github.khornya.useyourwords.model.message.game.VoteMessageContent;
 import com.github.khornya.useyourwords.model.message.player.HideAnswerMessageContent;
 import com.github.khornya.useyourwords.repository.GameRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import java.util.*;
 
 @Service
 public class GameService {
+
+	private Logger logger = LoggerFactory.getLogger(GameService.class);
 
 	@Autowired
 	private GameRepository gameRepository;
@@ -35,31 +39,8 @@ public class GameService {
 		return gameRepository.getGame(gameId);
 	}
 
-	/**
-	 * handle a player has won, and the game is ended.
-	 *
-	 * @param gameId      gameId of the game
-	 * @param playerIndex index of the player who won the game
-	 */
-	public void playerWin(String gameId, int playerIndex) {
-	}
-
-	/**
-	 * handle a player leaved the game
-	 *
-	 * @param game object extends abstractGame
-	 * @param playerIndex    index of the player who leaved the game
-	 */
-	public void playerLeaved(Game game, int playerIndex) {
-
-	}
-
-	/**
-	 * handle the game is start
-	 *
-	 * @param gameId gameId of the game needed to start
-	 */
 	public void start(String gameId) {
+		logger.info("GAME START - gameId: {}", gameId);
 		Game game = getGameById(gameId);
 		GameStartMessageContent gameStartMessageContent = new GameStartMessageContent(game.getTeams());
 		Message gameRoomMessage = new Message(Message.MessageType.START, gameStartMessageContent);
@@ -68,6 +49,7 @@ public class GameService {
 	}
 
 	private void nextRound(Game game) {
+		logger.info("NEXT ROUND - game: {}", game);
 		String gameId = game.getId();
 		if (game.getCurrentRoundNumber() == game.getNumOfRounds()) {
 			endGame(game);
@@ -97,6 +79,7 @@ public class GameService {
 	}
 
 	public void addAnswer(String gameId, Answer answer) {
+		logger.info("ADD ANSWER - gameId: {}, answer: {}", gameId, answer);
 		Game game = getGameById(gameId);
 		if (game.isAcceptAnswers()) {
 			game.addAnswer(answer);
@@ -108,6 +91,7 @@ public class GameService {
 	}
 
 	private void endRound(Game game) {
+		logger.info("END ROUND - game: {}", game);
 		game.shuffleAnswers();
 		game.setAcceptAnswers(false);
 		VoteMessageContent voteMessageContent = new VoteMessageContent(game.getTransformedAnswers());
@@ -125,7 +109,8 @@ public class GameService {
 		}
 	}
 
-	private void endGame(Game game) {
+	public void endGame(Game game) {
+		logger.info("END GAME - game: {}", game);
 		for (Team team : game.getTeams()) {
 			for (Player player : team.getPlayers()) {
 				scoreService.add(new Score(player.getName(), team.getScore(), new Date(System.currentTimeMillis() / 1000)));
@@ -134,9 +119,11 @@ public class GameService {
 		GameStartMessageContent gameStartMessageContent = new GameStartMessageContent(game.getTeams());
 		Message gameRoomMessage = new Message(Message.MessageType.GAME_OVER, gameStartMessageContent);
 		webSocketService.sendToRoom(game.getId(), gameRoomMessage);
+		gameRepository.removeGame(game.getId());
 	}
 
 	public void addVote(String gameId, int answerIndex, String sessionId) {
+		logger.info("ADD ANSWER - gameId: {}, answerIndex: {}, sessionId: {}", gameId, answerIndex, sessionId);
 		Game game = getGameById(gameId);
 		game.addVote(answerIndex, sessionId);
 		if (game.getVotes().size() == game.getPlayers().length) {
