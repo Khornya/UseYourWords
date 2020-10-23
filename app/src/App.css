@@ -104,7 +104,8 @@ nav {
 }
 
 .element.text {
-  display: inline-flex;
+  display: flex;
+  flex-direction: row;
 }
 
 .textPartGroup {
@@ -119,6 +120,7 @@ nav {
 
 .element.text p {
   margin: auto;
+  white-space: nowrap;
 }
 
 .voteForm button {
