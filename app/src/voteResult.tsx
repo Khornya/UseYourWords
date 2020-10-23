@@ -1,19 +1,29 @@
-import React from "react"
+import React from "react";
 import { Team } from "./models";
 import { TeamComponent } from "./teamComponent";
+import { Timer } from "./timer";
+import WaitingMessage from "./waitingMessage";
 
 interface IVoteResultProps {
-    teams: Team[]
+  teams: Team[];
 }
 
 export class VoteResult extends React.Component<IVoteResultProps> {
-    render = () => {
-        return (
-            <div className="voteResult">
-                {this.props.teams.map((team, index) => {
-                    return (<TeamComponent team={team} number={index + 1} key={index} displayScoreDiff={true} displayPlayers={false}/>)
-                })}
-            </div>
-        )
-    }
+  render = () => {
+    return (
+      <div className="voteResult">
+        {this.props.teams.map((team, index) => {
+          return (
+            <TeamComponent
+              team={team}
+              number={index + 1}
+              key={index}
+              displayScoreDiff={true}
+              displayPlayers={false}
+            />
+          );
+        })}
+      </div>
+    );
+  };
 }

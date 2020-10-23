@@ -1,6 +1,6 @@
 import * as React from "react";
 import $ from "jquery";
-import { stompClient} from "./stompClient";
+import { stompClient } from "./stompClient";
 import { ICreateMessagePayload } from "./models";
 
 interface IGameFormProps {
@@ -18,7 +18,9 @@ class GameForm extends React.Component<IGameFormProps> {
         <nav className="navbar navbar-light bg-light">
           <form className="form-inline">
             <button
-              className={`btn ${this.state.isJoinForm ? "btn-primary" : "btn-outline-primary"}`}
+              className={`btn ${
+                this.state.isJoinForm ? "btn-primary" : "btn-outline-primary"
+              }`}
               type="button"
               onClick={() => {
                 this.setState({
@@ -29,7 +31,9 @@ class GameForm extends React.Component<IGameFormProps> {
               Join game
             </button>
             <button
-              className={`btn ${this.state.isJoinForm ? "btn-outline-primary" : "btn-primary"}`}
+              className={`btn ${
+                this.state.isJoinForm ? "btn-outline-primary" : "btn-primary"
+              }`}
               type="button"
               onClick={() => {
                 this.setState({
@@ -41,11 +45,7 @@ class GameForm extends React.Component<IGameFormProps> {
             </button>
           </form>
         </nav>
-        <form
-          id="gameForm"
-          name="gameForm"
-          onSubmit={this.submitForm}
-        >
+        <form id="gameForm" name="gameForm" onSubmit={this.submitForm}>
           <div className="form-group">
             <label htmlFor="name">Name :</label>
             <input
@@ -77,42 +77,43 @@ class GameForm extends React.Component<IGameFormProps> {
               </div>
             </div>
           ) : (
-              <div id="createGameForm">
-                <div className="form-group">
-                  <label htmlFor="numOfPlayers">Number of players :</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    id="numOfPlayers"
-                    min="2"
-                    max="6"
-                    defaultValue="2"
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="numOfTeams">Number of teams :</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    id="numOfTeams"
-                    min="2"
-                    max="3"
-                    defaultValue="2"
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="numOfRounds">Number of rounds :</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    id="numOfRounds"
-                    min="3"
-                    max="9"
-                    defaultValue="3"
-                  />
-                </div>
+            <div id="createGameForm">
+              <div className="form-group">
+                <label htmlFor="numOfPlayers">Number of players :</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="numOfPlayers"
+                  min="2"
+                  max="6"
+                  defaultValue="2"
+                />
               </div>
-            )}
+              <div className="form-group">
+                <label htmlFor="numOfTeams">Number of teams :</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="numOfTeams"
+                  min="2"
+                  max="3"
+                  defaultValue="2"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="numOfRounds">Number of rounds :</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="numOfRounds"
+                  min="3"
+                  max="9"
+                  step="3"
+                  defaultValue="3"
+                />
+              </div>
+            </div>
+          )}
           <button type="submit" className="btn btn-primary">
             Submit
           </button>
