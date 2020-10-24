@@ -1,26 +1,15 @@
 package com.github.khornya.useyourwords.controller;
 
 import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.github.khornya.useyourwords.model.Element;
-import com.github.khornya.useyourwords.model.ElementType;
 import com.github.khornya.useyourwords.service.ElementService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Map;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/element")
@@ -28,9 +17,6 @@ public class ElementController {
 
     @Autowired
     private ElementService srvElement;
-
-    @Autowired
-    private Cloudinary cloudinary;
 
     @GetMapping("/home")
     public String home() {
