@@ -1,24 +1,35 @@
 import * as React from "react";
 import "./App.css";
-import $ from "jquery";
 import Stomp, { Frame } from "stompjs";
+import { stompClient, initStompClient } from "./stompClient";
 import WaitingMessage from "./waitingMessage";
 import GameForm from "./gameForm";
 import WaitingRoom from "./waitingRoom";
 import GameRoom from "./gameRoom";
+import {
+  Element,
+  IEndRoundMessageContent,
+  IHideAnswerMessageContent,
+  ITimerMessageContent,
+} from "./models";
 import _ from "lodash-es";
 import {
   IErrorMessageContent,
+  IGameRoundMessageContent,
   IJoinedMessageContent,
   IMessage,
   IMessageContent,
   IPlayerJoinedMessageContent,
+  IStartMessageContent,
+  Team,
 } from "./models";
+import { proxy } from "../package.json";
 
 class App extends React.Component {
-  private stompClient: Stomp.Client;
   private stompPlayerSubscription: Stomp.Subscription;
   private stompGameSubscription: Stomp.Subscription;
+  private waitingForConnectionMessage: string =
+    "Please wait while connecting to the server ...";
 
   state = {
     isWaitingForConnection: true,
@@ -26,29 +37,52 @@ class App extends React.Component {
     isJoining: false,
     isPlaying: false,
     joinFormError: "",
-    gameId: ""
+    gameId: "",
+    gameState: {
+      teams: [] as Team[],
+      element: null as Element,
+      roundNumber: 0,
+      showTimer: false,
+      timerDuration: 0,
+      answers: [] as string[],
+      displayAnswerForm: true,
+      displayVoteForm: false,
+      displayVoteResult: false,
+      gameOver: false,
+    },
+    playerIndex: -1,
+    playerAnswerIndex: -1,
   };
 
   componentDidMount = () => {
-    this.stompClient = Stomp.client("ws://localhost:8080/sock");
-    this.stompClient.connect({}, this.onConnected, this.onError);
+    initStompClient(`${proxy.replace("http", "ws")}/sock`);
+    stompClient.connect({}, this.onConnected, this.onError);
+    stompClient.debug = () => {};
   };
 
   render = () => {
     return (
-      <div className="app d-flex justify-content-center flex-column">
-        <div className="banner d-flex justify-content-center">
+      <div className="app">
+        <div className="banner">
           <h1>Use Your Words</h1>
         </div>
-        {this.state.isWaitingToPlay && <WaitingRoom gameId={this.state.gameId} />}
-        {this.state.isWaitingForConnection && <WaitingMessage />}
+        {this.state.isWaitingToPlay && (
+          <WaitingRoom gameId={this.state.gameId} />
+        )}
+        {this.state.isWaitingForConnection && (
+          <WaitingMessage message={this.waitingForConnectionMessage} />
+        )}
         {this.state.isJoining && (
-          <GameForm
-            stompClient={this.stompClient}
-            joinFormError={this.state.joinFormError}
+          <GameForm joinFormError={this.state.joinFormError} />
+        )}
+        {this.state.isPlaying && (
+          <GameRoom
+            gameId={this.state.gameId}
+            gameState={this.state.gameState}
+            playerIndex={this.state.playerIndex}
+            playerAnswerIndex={this.state.playerAnswerIndex}
           />
         )}
-        {this.state.isPlaying && <GameRoom gameId={this.state.gameId} />}
       </div>
     );
   };
@@ -59,7 +93,7 @@ class App extends React.Component {
       isWaitingForConnection: false,
       isJoining: true,
     });
-    this.stompPlayerSubscription = this.stompClient.subscribe(
+    this.stompPlayerSubscription = stompClient.subscribe(
       `/user/queue/reply`,
       this.onPlayerMessageReceived
     );
@@ -68,7 +102,6 @@ class App extends React.Component {
 
   private onError = (error: string | Frame) => {
     console.error("Error while connecting to websocket : ", error);
-    // TODO: display error
     return true;
   };
 
@@ -79,17 +112,22 @@ class App extends React.Component {
       case "JOINED":
         const joinedMessageContent = message.content as IJoinedMessageContent;
         console.log(`You joined game ${joinedMessageContent.gameId}`);
-        this.stompGameSubscription = this.stompClient.subscribe(
+        this.stompGameSubscription = stompClient.subscribe(
           `/game-room/${joinedMessageContent.gameId}`,
           this.onGameMessageReceived
-        )
-        this.stompClient.send(`/app/ready`, {}, JSON.stringify(joinedMessageContent))
+        );
+        stompClient.send(
+          `/app/ready`,
+          {},
+          JSON.stringify(joinedMessageContent)
+        );
         this.setState({
           isJoining: false,
           isWaitingToPlay: true,
           joinFormError: "",
-          gameId: joinedMessageContent.gameId
-        })
+          gameId: joinedMessageContent.gameId,
+          playerIndex: joinedMessageContent.index,
+        });
         break;
       case "ERROR":
         const errorMessageContent = message.content as IErrorMessageContent;
@@ -98,6 +136,11 @@ class App extends React.Component {
         );
         this.setState({
           joinFormError: (content as IErrorMessageContent).message,
+        });
+        break;
+      case "HIDE_ANSWER":
+        this.setState({
+          playerAnswerIndex: (content as IHideAnswerMessageContent).answerIndex,
         });
         break;
       default:
@@ -112,18 +155,76 @@ class App extends React.Component {
       case "START":
         this.setState({
           isWaitingToPlay: false,
-          isPlaying: true
-        })
+          isPlaying: true,
+          gameState: {
+            ...this.state.gameState,
+            teams: (message.content as IStartMessageContent).teams,
+          },
+        });
         break;
       case "PLAYER_JOINED":
-        const playerJoinedMessageContent = message.content as IPlayerJoinedMessageContent
-        console.log(`${playerJoinedMessageContent.name} joined the game`)
+        const playerJoinedMessageContent = message.content as IPlayerJoinedMessageContent;
+        console.log(`${playerJoinedMessageContent.name} joined the game`);
         break;
+      case "NEXT_ROUND":
+        const gameRoundMessageContent = message.content as IGameRoundMessageContent;
+        this.setState({
+          gameState: {
+            ...this.state.gameState,
+            roundNumber: gameRoundMessageContent.roundNumber,
+            element: gameRoundMessageContent.element,
+            displayVoteResult: false,
+            displayAnswerForm: true,
+            showTimer: false,
+          },
+          playerAnswerIndex: -1,
+        });
+        break;
+      case "TIMER":
+        const timerMessageContent = message.content as ITimerMessageContent;
+        this.setState({
+          gameState: {
+            ...this.state.gameState,
+            showTimer: true,
+            timerDuration: timerMessageContent.secondsLeft,
+          },
+        });
+        break;
+      case "END_ROUND":
+        const endRoundMessageContent = message.content as IEndRoundMessageContent;
+        this.setState({
+          gameState: {
+            ...this.state.gameState,
+            answers: endRoundMessageContent.answers,
+            displayVoteForm: true,
+            displayAnswerForm: false,
+          },
+        });
+        break;
+      case "VOTES":
+        this.setState({
+          gameState: {
+            ...this.state.gameState,
+            teams: (message.content as IStartMessageContent).teams,
+            displayAnswerForm: false,
+            displayVoteForm: false,
+            displayVoteResult: true,
+          },
+        });
+        break;
+      case "GAME_OVER":
+        this.setState({
+          gameState: {
+            ...this.state.gameState,
+            teams: (message.content as IStartMessageContent).teams,
+            displayVoteResult: false,
+            gameOver: true,
+          },
+        });
       default:
-        console.log(message)
+        console.log(message);
     }
-  }
-
+  };
 }
 
 export default App;

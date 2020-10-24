@@ -1,13 +1,17 @@
 import * as React from "react";
 
-class WaitingMessage extends React.Component {
+interface IWaitingMessageProps {
+  message: string
+}
+
+class WaitingMessage extends React.Component<IWaitingMessageProps> {
   render = () => {
     return (
-      <div className="waitingMessage d-flex justify-content-center">
+      <div className="waitingMessage">
         <div className="spinner-border text-primary" role="status">
           <span className="sr-only"></span>
         </div>
-        <div className="message">Please wait...</div>
+        <div className="message">{this.props.message}</div>
       </div>
     );
   };

@@ -1,7 +1,7 @@
 package com.github.khornya.useyourwords.service;
 
 import com.github.khornya.useyourwords.dao.IScoreRepository;
-import com.github.khornya.useyourwords.exceptions.ScoreNotFoundException;
+import com.github.khornya.useyourwords.exception.ScoreNotFoundException;
 import com.github.khornya.useyourwords.model.Score;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -23,7 +23,7 @@ public class ScoreService {
         return this.daoScore.findById(id).orElseThrow(ScoreNotFoundException::new);
     }
 
-    public Score save(Score score) {
+    public Score add(Score score) {
         return this.daoScore.save(score);
     }
 

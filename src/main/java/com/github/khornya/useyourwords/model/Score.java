@@ -21,6 +21,15 @@ public class Score {
     @Column(name = "SCORE_DATE")
     private Date date;
 
+    public Score() {
+    }
+
+    public Score(String playerName, int score, Date date) {
+        this.playerName = playerName;
+        this.score = score;
+        this.date = date;
+    }
+
     public int getId() {
         return id;
     }

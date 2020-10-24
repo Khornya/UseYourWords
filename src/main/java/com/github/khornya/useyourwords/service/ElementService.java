@@ -1,8 +1,9 @@
 package com.github.khornya.useyourwords.service;
 
 import com.github.khornya.useyourwords.dao.IElementRepository;
-import com.github.khornya.useyourwords.exceptions.ElementNotFoundException;
+import com.github.khornya.useyourwords.exception.ElementNotFoundException;
 import com.github.khornya.useyourwords.model.Element;
+import com.github.khornya.useyourwords.model.ElementType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,15 @@ public class ElementService {
 
     public Element findById(int id) {
         return this.daoElement.findById(id).orElseThrow(ElementNotFoundException::new);
+    }
+
+    public Element findRandomElementByType(ElementType type) {
+        List<Element> list = this.daoElement.findRandomElementsByType(type);
+        if (list.size() > 0) {
+            return list.get(0);
+        } else {
+            throw new ElementNotFoundException();
+        }
     }
 
     public Element save(Element element) {

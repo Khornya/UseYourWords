@@ -1,7 +1,6 @@
 package com.github.khornya.useyourwords.config;
 
 import com.github.khornya.useyourwords.model.Game;
-import com.github.khornya.useyourwords.utils.GameUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,10 +19,4 @@ public class GameRoomConfig {
 	public Map<String, Game> getGameMap() {
 		return new ConcurrentHashMap<>();
 	}
-
-	@Bean
-	public GameUtils getPlayerUtils() {
-		return new GameUtils();
-	}
-
 }

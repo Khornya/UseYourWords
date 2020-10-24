@@ -1,42 +1,146 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app {
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.banner {
+  margin: 10px;
+}
+
+nav {
+  margin-bottom: 20px;
+}
+
+.waitingRoom {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin-bottom: 50px;
 }
 
-.App-link {
-  color: #61dafb;
+.waitingMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.spinner-border {
+  margin: 10px;
 }
 
 .error-tooltip {
   margin-top: 5px;
+}
+
+#gameFormContainer {
+  width: 30%;
+}
+
+.game-room {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
+  
+}
+
+.teams {
+  width: 10%;
+}
+
+.rightColumn {
+  width: 10%;
+}
+
+.team {
+  margin: 0px 5px 5px 5px;
+}
+
+.team .card-header {
+  font-weight: bold;
+  color: white;
+}
+
+.team ul li svg {
+  fill: #007bff;
+  margin-right: 5px;
+}
+
+.round {
+  width:50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.round h3 {
+  text-align: center;
+  border: 1px solid #007bff;
+  width: 100%;
+  color: #007bff;
+  border-radius: 5px;
+  padding: 5px 0px;
+}
+
+.submitWithTimer {
+  display: flex;
+  flex-direction: row;
+}
+
+#roundForm button {
+  margin-right: 5px;
+}
+
+.timer {
+  font-size: x-large;
+  color: #dc3545;
+}
+
+.element {
+  margin-bottom: 10px;
+}
+
+.element.text {
+  display: flex;
+  flex-direction: row;
+}
+
+.textPartGroup {
+  display: flex;
+  align-items: center;
+}
+
+.textPartGroup input {
+  width: auto;
+  margin: 0px 5px;
+}
+
+.element.text p {
+  margin: auto;
+  white-space: nowrap;
+}
+
+.voteForm button {
+  margin-top: 10px;
+}
+
+.gameResult, .voteResult {
+  display: flex;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.gameResult {
+  flex-direction: column;
+}
+
+.gameResultTeams {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
