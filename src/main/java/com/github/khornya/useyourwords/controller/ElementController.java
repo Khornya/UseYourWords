@@ -51,73 +51,25 @@ public class ElementController {
 
     @PostMapping("/ajouter")
     public String add(Element element, @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
-
-        String dossier = "";
-
-        if (element.getType() == ElementType.PHOTO) {
-            dossier = "Photos";
-        } else if (element.getType() == ElementType.VIDEO) {
-            dossier = "Vidéos";
-        }
-
-        if (element.getUuid() == null) {
-            element.setUuid(UUID.randomUUID().toString().replace("-", ""));
-        }
-
-        if (element.getType() != ElementType.TEXT) {
-            Map params = ObjectUtils.asMap(
-                    "public_id", dossier + "/" + element.getName() + "_" + element.getUuid(),
-                    "overwrite", true,
-                    "notification_url", "https://mysite/notify_endpoint",
-                    "resource_type", "auto"
-            );
-
-            File f = Files.createTempFile("temp", file.getOriginalFilename()).toFile();
-            file.transferTo(f);
-            Map uploadResult = cloudinary.uploader().upload(f, params);
-            element.setUrl(uploadResult.get("secure_url").toString());
-        }
-
-        this.srvElement.add(element);
-
+        this.srvElement.add(element, file);
         return "redirect:./liste";
     }
 
     @GetMapping("/supprimer/{id}")
     public String deleteById(@PathVariable int id) throws IOException {
-        Element element = this.srvElement.findById(id);
-
-        if (element.getType() == ElementType.PHOTO) {
-            cloudinary.uploader().destroy("Photos/" + element.getName() + "_" + element.getUuid(), ObjectUtils.emptyMap());
-        } else if (element.getType() == ElementType.VIDEO) {
-            cloudinary.uploader().destroy("Vidéos/" + element.getName() + "_" + element.getUuid(), ObjectUtils.asMap("resourceType", "video"));
-        }
-
         this.srvElement.deleteById(id);
-
         return "redirect:../liste";
     }
 
     @GetMapping("/editer")
-    public String update(@RequestParam int id, Model model) throws IOException {
-        Element elementToEdit = new Element() ;
-        elementToEdit.setName(this.srvElement.findById(id).getName());
-        elementToEdit.setDefaultResponse(this.srvElement.findById(id).getDefaultResponse());
-        if(this.srvElement.findById(id).getType() == ElementType.TEXT)
-        {
-            elementToEdit.setToFillText(this.srvElement.findById(id).getToFillText());
-        }
-
-        model.addAttribute("element", elementToEdit);
-        deleteById(id);
-
+    public String update(@RequestParam int id, Model model) {
+        model.addAttribute("element", this.srvElement.findById(id));
         return "element/form";
     }
 
-    @PostMapping("/editer")
-    public String update(@RequestParam int id, Element element) {
-        this.srvElement.save(element);
-
-        return "redirect:./liste";
+    @PostMapping("/editer/{id}")
+    public String update(Element element, @PathVariable int id, @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+        this.srvElement.update(element, id, file);
+        return "redirect:../liste";
     }
 }
