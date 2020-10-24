@@ -5,6 +5,7 @@
     <title>Use Your Words - Liste Des Éléments</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../style.css">
     <base href="/"/>
 </head>
 
@@ -58,7 +59,8 @@
             [[ ${ element.id } ]]
         </td>
         <td>
-            <iframe width="auto" height="auto" th:src="${ element.url }" frameborder="0" allowfullscreen></iframe>
+            <img th:if="${ element.type == T(com.github.khornya.useyourwords.model.ElementType).PHOTO }" class="img-fluid" th:src="${ element.url }"  alt="miniature" />
+            <video th:if="${ element.type == T(com.github.khornya.useyourwords.model.ElementType).VIDEO }" class="embed-fluid" th:src="${ element.url }" controls></video>
         </td>
         <td>
             [[ ${ element.toFillText } ]]
