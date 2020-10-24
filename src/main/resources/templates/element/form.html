@@ -90,8 +90,8 @@
 
     showfield(element?.type.toString());
     const form = document.forms[0];
-    if (element !== {}) {
-        form.setAttribute("action", "/element/editer/" + element.id.toString());
+    if (element !== null) {
+        form.setAttribute("action", "/element/editer/" + element?.id.toString());
     }
 </script>
 </body>
