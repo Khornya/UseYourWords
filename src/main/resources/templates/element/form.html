@@ -80,7 +80,7 @@
 <script type="text/javascript">
     function showfield(type) {
         if (type == 'TEXT') {
-            document.getElementById('div1').innerHTML = '<input type="text" name="toFillText" class="form-control" value="' + element.toFillText + '" placeholder="Texte à trous"/>';
+            document.getElementById('div1').innerHTML = '<input type="text" name="toFillText" class="form-control" value="' + (element !== null ? element.toFillText : "") + '" placeholder="Texte à trous"/>';
         } else if (type == 'PHOTO') {
             document.getElementById('div1').innerHTML = '<input type="file" id="file-upload" name="file" class="form-control" placeholder="fichier" accept=".png,.jpg,.jpeg"/>';
         } else {
