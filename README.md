@@ -9,4 +9,4 @@
 # Informations importantes
 
   - Nous avons fait le choix, pour stocker les fichiers photo et vidéo, d'utiliser Cloudinary. Afin de ne pas rendre public via github les identifiants de l'API utilisée, il faudra donc remplacer le fichier application.properties par celui fourni en pièce jointe du mail.
-  - Nous avons également ajouté des éléments à notre jeu qui sont stockés en base de données. Il faut donc importer sur la base en local le fichier values.sql.
+  - Nous avons également ajouté des éléments à notre jeu qui sont stockés en base de données. Il faut donc exécuter dans l'onglet SQL de la table element créée, la requête contenue dans le fichier values.sql.
