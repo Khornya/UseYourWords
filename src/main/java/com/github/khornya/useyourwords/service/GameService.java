@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -113,7 +114,7 @@ public class GameService {
 		logger.info("END GAME - game: {}", game);
 		for (Team team : game.getTeams()) {
 			for (Player player : team.getPlayers()) {
-				scoreService.add(new Score(player.getName(), team.getScore(), new Date(System.currentTimeMillis() / 1000)));
+				scoreService.add(new Score(player.getName(), team.getScore(), LocalDateTime.now()));
 			}
 		}
 		GameStartMessageContent gameStartMessageContent = new GameStartMessageContent(game.getTeams());

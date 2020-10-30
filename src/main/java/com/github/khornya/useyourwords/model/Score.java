@@ -1,6 +1,7 @@
 package com.github.khornya.useyourwords.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity // ANNOTATION OBLIGATOIRE POUR UNE ENTITE
@@ -19,12 +20,12 @@ public class Score {
     private int score;
 
     @Column(name = "SCORE_DATE")
-    private Date date;
+    private LocalDateTime date;
 
     public Score() {
     }
 
-    public Score(String playerName, int score, Date date) {
+    public Score(String playerName, int score, LocalDateTime date) {
         this.playerName = playerName;
         this.score = score;
         this.date = date;
@@ -54,11 +55,11 @@ public class Score {
         this.score = score;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 }
