@@ -17,7 +17,7 @@ public class ExceptionHandlingController {
             HttpServletResponse response) {
 
         ModelAndView modelAndView = new ModelAndView("error");
-        modelAndView.addObject("message", String.format("Le fichier dépasse les %s Mo !", ex.getMaxUploadSize() / 1000));
+        modelAndView.addObject("message", String.format("Le fichier dépasse les %s Mo !", ex.getMaxUploadSize() / 1000000));
         return modelAndView;
     }
 }
