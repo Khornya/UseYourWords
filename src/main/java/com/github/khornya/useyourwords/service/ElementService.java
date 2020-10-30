@@ -46,7 +46,7 @@ public class ElementService {
         Element elementToEdit = findById(id);
         element.setId(elementToEdit.getId());
         element.setUuid(elementToEdit.getUuid());
-        if (!file.isEmpty() && element.getType() != ElementType.TEXT) {
+        if (file != null && !file.isEmpty() && element.getType() != ElementType.TEXT) {
             String dossier = "";
             if (element.getType() == ElementType.PHOTO) {
                 dossier = "Photos";

@@ -25,3 +25,18 @@
 th:nth-child(2) {
     width: 10%;
 }
+
+.error-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.error-message p {
+    background-color: white;
+    padding: 10px;
+    border: 1px solid red;
+    color: red;
+    font-size: xx-large;
+}
