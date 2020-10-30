@@ -33,7 +33,7 @@
 
                         <div class="m-2 form-group">
                             <select name="type" class="btn btn-primary dropdown-toggle" id="typeList"
-                                    onchange="showfield(this.options[this.selectedIndex].value)">
+                                    onchange="showfield(this.options[this.selectedIndex].value)" required>
                                 <option value="" disabled selected>Choisir un type d'élément</option>
                                 <option id="photo" value="PHOTO" th:selected="${ 'PHOTO' == element?.type?.name() }">
                                     Photo
@@ -49,7 +49,7 @@
 
                         <div class="form-group m-2">
                             <input type="text" id="nom" name="name" class="form-control" th:value="${ element?.name }"
-                                   placeholder="Nom"/>
+                                   placeholder="Nom" required />
                         </div>
 
                         <div class="form-group m-2" id="div1">
@@ -59,7 +59,7 @@
                         <div class="form-group m-2">
                             <input type="text" id="defaultresp" name="defaultResponse" class="form-control"
                                    th:value="${ element?.defaultResponse }"
-                                   placeholder="Réponse par défaut"/>
+                                   placeholder="Réponse par défaut" required />
                         </div>
 
                         <button type="submit" class="btn btn-primary">Valider</button>
@@ -79,19 +79,30 @@
 </script>
 <script type="text/javascript">
     function showfield(type) {
-        if (type == 'TEXT') {
-            document.getElementById('div1').innerHTML = '<input type="text" name="toFillText" class="form-control" value="' + (element !== null ? element.toFillText : "") + '" placeholder="Texte à trous"/>';
-        } else if (type == 'PHOTO') {
-            document.getElementById('div1').innerHTML = '<input type="file" id="file-upload" name="file" class="form-control" placeholder="fichier" accept=".png,.jpg,.jpeg"/>';
-        } else {
-            document.getElementById('div1').innerHTML = '<input type="file" id="file-upload" name="file" class="form-control" placeholder="fichier" accept=".mp4,.avi,.wmv"/>';
+        switch (type) {
+            case "TEXT":
+                document.getElementById('div1').innerHTML = '<input type="text" name="toFillText" class="form-control" value="' + (element !== null ? element.toFillText : "") + '" placeholder="Texte à [...] trous" required />';
+                break;
+            case "PHOTO":
+                document.getElementById('div1').innerHTML = '<input type="file" id="file-upload" name="file" class="form-control" placeholder="fichier" accept=".png,.jpg,.jpeg"/>';
+                break;
+            case "VIDEO":
+                document.getElementById('div1').innerHTML = '<input type="file" id="file-upload" name="file" class="form-control" placeholder="fichier" accept=".mp4,.avi,.wmv"/>';
+                break;
+        }
+        const fileUploadElement = document.getElementById('file-upload');
+        if (element === null && fileUploadElement !== null) {
+            fileUploadElement.setAttribute("required", "true");
         }
     }
-
-    showfield(element?.type.toString());
-    const form = document.forms[0];
     if (element !== null) {
+        showfield(element?.type.toString());
+        const form = document.forms[0];
         form.setAttribute("action", "/element/editer/" + element?.id.toString());
+        document.getElementById("typeList").setAttribute("hidden", "true")
+    } else {
+        const dropdown = document.getElementById("typeList")
+        showfield(dropdown.options[dropdown.selectedIndex].value)
     }
 </script>
 </body>
