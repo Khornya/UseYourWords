@@ -59,7 +59,7 @@
                         <div class="form-group m-2">
                             <input type="text" id="defaultresp" name="defaultResponse" class="form-control"
                                    th:value="${ element?.defaultResponse }"
-                                   placeholder="Réponse par défaut" required />
+                                   th:placeholder="${ element?.type?.name() == 'TEXT' ? 'Texte avec des trous' : 'Réponse par défaut' }" required />
                         </div>
 
                         <button type="submit" class="btn btn-primary">Valider</button>
@@ -81,7 +81,10 @@
     function showfield(type) {
         switch (type) {
             case "TEXT":
-                document.getElementById('div1').innerHTML = '<input type="text" name="toFillText" class="form-control" value="' + (element !== null ? element.toFillText : "") + '" placeholder="Texte à [...] trous" required />';
+                document.getElementById('div1').innerHTML = '<input type="text" name="toFillText" class="form-control" value="' + (element !== null ? element.toFillText : "") + '" placeholder="Texte avec des [...]" required />';
+                if (element === null) {
+                    document.getElementById("defaultresp").setAttribute("placeholder", "Texte avec des trous")
+                }
                 break;
             case "PHOTO":
                 document.getElementById('div1').innerHTML = '<input type="file" id="file-upload" name="file" class="form-control" placeholder="fichier" accept=".png,.jpg,.jpeg"/>';
