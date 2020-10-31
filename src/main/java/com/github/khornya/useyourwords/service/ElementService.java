@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.github.khornya.useyourwords.dao.IElementRepository;
 import com.github.khornya.useyourwords.exception.ElementNotFoundException;
+import com.github.khornya.useyourwords.exception.MissingFileException;
 import com.github.khornya.useyourwords.model.Element;
 import com.github.khornya.useyourwords.model.ElementType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,7 @@ public class ElementService {
     }
 
     private void uploadToCloudinary(Element element, MultipartFile file, String dossier) throws IOException {
+        if (file == null) throw new MissingFileException();
         Map params = ObjectUtils.asMap(
                 "public_id", dossier + "/" + element.getName() + "_" + element.getUuid(),
                 "overwrite", true,
