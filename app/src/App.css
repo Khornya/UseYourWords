@@ -43,7 +43,9 @@ nav {
 }
 
 .error-tooltip {
-  margin-top: 5px;
+  margin-bottom: 1rem;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 #gameFormContainer {

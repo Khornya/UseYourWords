@@ -38,7 +38,7 @@ public class PlayerService extends WebSocketService {
         if (game != null && game.getJoinCount().incrementAndGet() <= game.getPlayers().length)
             addPlayer(new Player(name, sessionId), game);
         else {
-            ErrorMessageContent errorMessageContent = new ErrorMessageContent(ErrorCode.JOIN_INVALID_GAMEID.toString(), "Unable to join this game");
+            ErrorMessageContent errorMessageContent = new ErrorMessageContent(ErrorCode.JOIN_INVALID_GAMEID.toString(), "Impossible de rejoindre cette partie");
             Message message = new Message(Message.MessageType.ERROR, errorMessageContent);
             webSocketService.replyToUser(sessionId, message);
         }

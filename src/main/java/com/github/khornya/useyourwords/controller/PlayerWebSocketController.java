@@ -53,7 +53,7 @@ public class PlayerWebSocketController {
 		try {
 			game = new Game(elementService, gameId, message.getNumOfPlayers(), message.getNumOfTeams(), message.getNumOfRounds());
 		} catch (ElementNotFoundException e) {
-			webSocketService.replyToUser(sessionId, new Message(Message.MessageType.ERROR, new ErrorMessageContent(ErrorCode.DATABASE_ERROR.toString(), "No data available")));
+			webSocketService.replyToUser(sessionId, new Message(Message.MessageType.ERROR, new ErrorMessageContent(ErrorCode.DATABASE_ERROR.toString(), "Pas assez d'éléments pour jouer")));
 			return;
 		}
 		gameService.addGame(gameId, game);

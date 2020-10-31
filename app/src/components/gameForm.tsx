@@ -18,9 +18,8 @@ class GameForm extends React.Component<IGameFormProps> {
         <nav className="navbar navbar-light bg-light">
           <form className="form-inline">
             <button
-              className={`btn ${
-                this.state.isJoinForm ? "btn-primary" : "btn-outline-primary"
-              }`}
+              className={`btn ${this.state.isJoinForm ? "btn-primary" : "btn-outline-primary"
+                }`}
               type="button"
               onClick={() => {
                 this.setState({
@@ -31,9 +30,8 @@ class GameForm extends React.Component<IGameFormProps> {
               Rejoindre une partie
             </button>
             <button
-              className={`btn ${
-                this.state.isJoinForm ? "btn-outline-primary" : "btn-primary"
-              }`}
+              className={`btn ${this.state.isJoinForm ? "btn-outline-primary" : "btn-primary"
+                }`}
               type="button"
               onClick={() => {
                 this.setState({
@@ -66,54 +64,54 @@ class GameForm extends React.Component<IGameFormProps> {
                 id="gameId"
                 placeholder="XXXXXX"
               />
-              <div
-                className={
-                  !this.props.joinFormError
-                    ? "error-tooltip d-none"
-                    : "error-tooltip border border-danger rounded"
-                }
-              >
-                {this.props.joinFormError}
-              </div>
             </div>
           ) : (
-            <div id="createGameForm">
-              <div className="form-group">
-                <label htmlFor="numOfPlayers">Nombre de joueurs :</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="numOfPlayers"
-                  min="2"
-                  max="6"
-                  defaultValue="2"
-                />
+              <div id="createGameForm">
+                <div className="form-group">
+                  <label htmlFor="numOfPlayers">Nombre de joueurs :</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="numOfPlayers"
+                    min="2"
+                    max="6"
+                    defaultValue="2"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="numOfTeams">Nombre d'équipes :</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="numOfTeams"
+                    min="2"
+                    max="3"
+                    defaultValue="2"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="numOfRounds">Nombre de manches :</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="numOfRounds"
+                    min="3"
+                    max="9"
+                    step="3"
+                    defaultValue="3"
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label htmlFor="numOfTeams">Nombre d'équipes :</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="numOfTeams"
-                  min="2"
-                  max="3"
-                  defaultValue="2"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="numOfRounds">Nombre de manches :</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="numOfRounds"
-                  min="3"
-                  max="9"
-                  step="3"
-                  defaultValue="3"
-                />
-              </div>
-            </div>
-          )}
+            )}
+          <div
+            className={
+              !this.props.joinFormError
+                ? "error-tooltip d-none"
+                : "error-tooltip border border-danger rounded"
+            }
+          >
+            {this.props.joinFormError}
+          </div>
           <button type="submit" className="btn btn-primary">
             Valider
           </button>
