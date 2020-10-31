@@ -166,8 +166,12 @@ nav {
   border: 1px solid lightblue;
 }
 
-.gameResult {
+.gameResult, .voteResult {
   flex-direction: column;
+}
+
+.voteResultTeams {
+  display: flex;
 }
 
 .gameResultTeams {

@@ -25,7 +25,7 @@ class GameRoom extends React.Component<IGameRoomProps> {
         </div>}
         {this.props.gameState.roundNumber > 0 && !this.props.gameState.gameOver && <Round gameId={this.props.gameId} playerIndex={this.props.playerIndex} playerAnswerIndex={this.props.playerAnswerIndex} gameState={this.props.gameState}/>}
         <div className="rightColumn"></div>
-        {this.props.gameState.displayVoteResult && <VoteResult teams={this.props.gameState.teams} />}
+        {this.props.gameState.displayVoteResult && <VoteResult teams={this.props.gameState.teams} roundNumber={this.props.gameState.roundNumber}/>}
         {this.props.gameState.gameOver && <GameResult teams={this.props.gameState.teams} />}
       </div>
     )
