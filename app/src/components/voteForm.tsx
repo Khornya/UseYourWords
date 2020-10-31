@@ -38,10 +38,10 @@ export class VoteForm extends React.Component<IVoteForm> {
                         })}
                         {this.state.showSubmitButton ?
                             <button type="submit" className="btn btn-primary">
-                                Vote
+                                Voter
                             </button>
                         :
-                            <div className="waitingMessage alert alert-primary" role="alert">Please wait for the other players ...</div>}
+                            <div className="waitingMessage alert alert-primary" role="alert">Veuillez attendre les autres joueurs ...</div>}
                     </form>
                 </div>
             </div>

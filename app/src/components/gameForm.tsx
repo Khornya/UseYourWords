@@ -28,7 +28,7 @@ class GameForm extends React.Component<IGameFormProps> {
                 });
               }}
             >
-              Join game
+              Rejoindre une partie
             </button>
             <button
               className={`btn ${
@@ -41,30 +41,30 @@ class GameForm extends React.Component<IGameFormProps> {
                 });
               }}
             >
-              Create game
+              Créer une partie
             </button>
           </form>
         </nav>
         <form id="gameForm" name="gameForm" onSubmit={this.submitForm}>
           <div className="form-group">
-            <label htmlFor="name">Name :</label>
+            <label htmlFor="name">Nom :</label>
             <input
               required
               type="text"
               className="form-control"
               id="name"
-              placeholder="Enter name"
+              placeholder="Votre nom"
             />
           </div>
           {this.state.isJoinForm ? (
             <div className="form-group">
-              <label htmlFor="gameId">Game ID :</label>
+              <label htmlFor="gameId">ID de la partie:</label>
               <input
                 required
                 type="text"
                 className="form-control"
                 id="gameId"
-                placeholder="Enter game ID"
+                placeholder="XXXXXX"
               />
               <div
                 className={
@@ -79,7 +79,7 @@ class GameForm extends React.Component<IGameFormProps> {
           ) : (
             <div id="createGameForm">
               <div className="form-group">
-                <label htmlFor="numOfPlayers">Number of players :</label>
+                <label htmlFor="numOfPlayers">Nombre de joueurs :</label>
                 <input
                   type="number"
                   className="form-control"
@@ -90,7 +90,7 @@ class GameForm extends React.Component<IGameFormProps> {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="numOfTeams">Number of teams :</label>
+                <label htmlFor="numOfTeams">Nombre d'équipes :</label>
                 <input
                   type="number"
                   className="form-control"
@@ -101,7 +101,7 @@ class GameForm extends React.Component<IGameFormProps> {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="numOfRounds">Number of rounds :</label>
+                <label htmlFor="numOfRounds">Nombre de manches :</label>
                 <input
                   type="number"
                   className="form-control"
@@ -115,7 +115,7 @@ class GameForm extends React.Component<IGameFormProps> {
             </div>
           )}
           <button type="submit" className="btn btn-primary">
-            Submit
+            Valider
           </button>
         </form>
       </div>

@@ -28,7 +28,7 @@ class App extends React.Component {
   private stompPlayerSubscription: Stomp.Subscription;
   private stompGameSubscription: Stomp.Subscription;
   private waitingForConnectionMessage: string =
-    "Please wait while connecting to the server ...";
+    "Veuillez patientez pendant la connexion au serveur ...";
 
   state = {
     isWaitingForConnection: true,

@@ -50,7 +50,7 @@ export class Round extends React.Component<IRoundProps> {
     };
     return (
       <div className="round" style={{opacity: this.props.gameState.displayVoteResult ? "0" : "100"}}>
-        <h3>Round {this.props.gameState.roundNumber}</h3>
+        <h3>Manche {this.props.gameState.roundNumber}</h3>
         <form id="roundForm" name="roundForm" onSubmit={this.submitForm}>
           {
             {
@@ -120,7 +120,7 @@ export class Round extends React.Component<IRoundProps> {
                     : "btn-primary"
                     }`}
                 >
-                  Answer
+                  Répondre
                 </button>
                 {this.props.gameState.showTimer && <Timer duration={10} />}
               </div>
@@ -128,7 +128,7 @@ export class Round extends React.Component<IRoundProps> {
           {this.props.gameState.displayAnswerForm &&
             !this.state.showSubmitButton && (
               <div className="waitingMessage alert alert-primary" role="alert">
-                Please wait for the other players ...
+                Veuillez attendre les autres joueurs ...
               </div>
             )}
         </form>

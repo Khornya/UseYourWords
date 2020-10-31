@@ -11,7 +11,7 @@ class WaitingRoom extends React.Component<IWaitingRoomProps> {
     render = () => {
         return (
         <div className="waitingRoom">
-            <p className="alert alert-primary" role="alert">Ask your friends to join game with code <b>{this.props.gameId}</b></p>
+            <p className="alert alert-primary" role="alert">Demandez à vos amis de rejoindre la partie avec le code <b>{this.props.gameId}</b></p>
             <WaitingMessage message={this.waitingForPlayersMessage}/>
         </div>
         );

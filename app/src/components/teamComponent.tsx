@@ -32,7 +32,7 @@ export class TeamComponent extends React.Component<ITeamProps> {
         primaryColor = this.props.displayPlayers ? "primary" : scoreColor
         return (
             <div className={`team card border-${primaryColor}`}>
-                <div className={`card-header bg-${primaryColor} border-${primaryColor}`}>Team {this.props.number}</div>
+                <div className={`card-header bg-${primaryColor} border-${primaryColor}`}>Equipe {this.props.number}</div>
                 {this.props.displayPlayers &&
                     <ul className="list-group list-group-flush">
                         {this.props.team.players.map((player, index) => {
