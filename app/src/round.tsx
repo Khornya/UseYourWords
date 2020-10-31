@@ -24,7 +24,18 @@ export class Round extends React.Component<IRoundProps> {
   };
 
   render = () => {
-    const textParts = this.props.gameState.element.toFillText?.split("[...]");
+    let toFillText: string[] = [];
+    let textParts: string[] = [];
+    if (this.props.gameState.element.toFillText) {
+      toFillText = this.props.gameState.element.toFillText.split("[...]");
+      textParts = [...toFillText].map((element, i) => {
+        if (i < toFillText.length - 1 && element !== "" && toFillText[i+1] !== "") {
+          return [element, ""]
+        } else {
+          return [element]
+        }
+      }).reduce((a, b) => a.concat(b))
+    }
     let input = (index: number) => {
       return (
         <input
@@ -84,7 +95,7 @@ export class Round extends React.Component<IRoundProps> {
                 <div className="form-group">
                   <div className="element text">
                     {this.props.gameState.displayAnswerForm ? (
-                      textParts?.map((textPart, index) => {
+                      textParts.map((textPart, index) => {
                         if (textPart.trim() === "") {
                           return input(index);
                         } else {
@@ -92,8 +103,8 @@ export class Round extends React.Component<IRoundProps> {
                         }
                       })
                     ) : (
-                      <p>{this.props.gameState.element.url}</p>
-                    )}
+                        <p>{this.props.gameState.element.url}</p>
+                      )}
                   </div>
                 </div>
               ),
@@ -104,11 +115,10 @@ export class Round extends React.Component<IRoundProps> {
               <div className="submitWithTimer">
                 <button
                   type="submit"
-                  className={`btn ${
-                    this.props.gameState.showTimer
+                  className={`btn ${this.props.gameState.showTimer
                       ? "btn-danger"
                       : "btn-primary"
-                  }`}
+                    }`}
                 >
                   Answer
                 </button>
