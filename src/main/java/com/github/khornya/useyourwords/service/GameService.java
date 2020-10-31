@@ -138,7 +138,7 @@ public class GameService {
 				public void run() {
 					nextRound(game);
 				}
-			}, 10 * 1000);
+			}, 3 * 1000);
 		}
 	}
 }
