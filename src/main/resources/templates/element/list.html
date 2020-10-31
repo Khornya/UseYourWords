@@ -60,7 +60,7 @@
         </td>
         <td>
             <img th:if="${ element.type == T(com.github.khornya.useyourwords.model.ElementType).PHOTO }" class="img-fluid" th:src="${ element.url }"  alt="miniature" />
-            <video th:if="${ element.type == T(com.github.khornya.useyourwords.model.ElementType).VIDEO }" class="embed-fluid" th:src="${ element.url }" controls></video>
+            <video th:if="${ element.type == T(com.github.khornya.useyourwords.model.ElementType).VIDEO }" class="embed-responsive" th:src="${ element.url }" controls></video>
         </td>
         <td>
             [[ ${ element.toFillText } ]]
