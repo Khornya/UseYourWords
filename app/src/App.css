@@ -5,16 +5,27 @@
   align-items: center;
 }
 
-.banner {
-  margin: 10px;
+.background {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image:url("./resources/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 nav {
-  margin-bottom: 20px;
+  width: 100%;
+}
+
+.navbar {
+  padding-bottom: 20px;
 }
 
 .waitingRoom {
-  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -37,6 +48,16 @@ nav {
 
 #gameFormContainer {
   width: 30%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+}
+
+#gameForm {
+  background-color: white;
+  padding: 10px;
 }
 
 .game-room {
@@ -44,7 +65,8 @@ nav {
   flex-direction: row;
   justify-content: space-evenly;
   width: 100%;
-  
+  height: 100%;
+  align-items: center;
 }
 
 .teams {
@@ -74,13 +96,15 @@ nav {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: white;
+  padding: 20px;
 }
 
 .round h3 {
   text-align: center;
-  border: 1px solid #007bff;
   width: 100%;
   color: #007bff;
+  background-color: white;
   border-radius: 5px;
   padding: 5px 0px;
 }
@@ -106,14 +130,11 @@ nav {
 .element.text {
   display: flex;
   flex-direction: row;
+  padding: 10px;
+  background-color: white;
 }
 
-.textPartGroup {
-  display: flex;
-  align-items: center;
-}
-
-.textPartGroup input {
+.element.text input {
   width: auto;
   margin: 0px 5px;
 }
@@ -123,16 +144,26 @@ nav {
   white-space: nowrap;
 }
 
+.waitingMessage {
+  padding: 10px;
+  background-color: white;
+  border: 1px solid lightblue;
+}
+
 .voteForm button {
   margin-top: 10px;
 }
 
 .gameResult, .voteResult {
   display: flex;
+  align-items: center;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid lightblue;
 }
 
 .gameResult {
@@ -143,4 +174,5 @@ nav {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  margin-bottom: 10px;
 }

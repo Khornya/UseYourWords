@@ -15,16 +15,6 @@ class GameForm extends React.Component<IGameFormProps> {
   render = () => {
     return (
       <div id="gameFormContainer">
-      <div className="row">
-          <div className="col-md-12">
-              <nav className="nav nav-pills bg-secondary p-1">
-                  <a className="nav-link text-white" href="http://localhost:8080/home">Accueil</a>
-                  <a className="nav-link active nav-item text-white" href="http://localhost:3000">Jouer !</a>
-                  <a className="nav-link text-white" href="http://localhost:8080/scoreboard">Tableau des scores</a>
-                  <a className="nav-link text-white" href="http://localhost:8080/element/home">Admin</a>
-              </nav>
-          </div>
-      </div>
         <nav className="navbar navbar-light bg-light">
           <form className="form-inline">
             <button

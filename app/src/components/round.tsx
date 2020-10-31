@@ -29,7 +29,7 @@ export class Round extends React.Component<IRoundProps> {
     if (this.props.gameState.element.toFillText) {
       toFillText = this.props.gameState.element.toFillText.split("[...]");
       textParts = [...toFillText].map((element, i) => {
-        if (i < toFillText.length - 1 && element !== "" && toFillText[i+1] !== "") {
+        if (i < toFillText.length - 1 && element !== "" && toFillText[i + 1] !== "") {
           return [element, ""]
         } else {
           return [element]
@@ -49,7 +49,7 @@ export class Round extends React.Component<IRoundProps> {
       );
     };
     return (
-      <div className="round">
+      <div className="round" style={{opacity: this.props.gameState.displayVoteResult ? "0" : "100"}}>
         <h3>Round {this.props.gameState.roundNumber}</h3>
         <form id="roundForm" name="roundForm" onSubmit={this.submitForm}>
           {
@@ -116,8 +116,8 @@ export class Round extends React.Component<IRoundProps> {
                 <button
                   type="submit"
                   className={`btn ${this.props.gameState.showTimer
-                      ? "btn-danger"
-                      : "btn-primary"
+                    ? "btn-danger"
+                    : "btn-primary"
                     }`}
                 >
                   Answer

@@ -62,26 +62,31 @@ class App extends React.Component {
   render = () => {
     return (
       <div className="app">
-        <div className="banner">
-          <h1>Use Your Words</h1>
+        <nav className="nav nav-pills bg-secondary p-1">
+          <a className="nav-link text-white" href="http://localhost:8080/home">Accueil</a>
+          <a className="nav-link active nav-item text-white" href="http://localhost:3000">Jouer !</a>
+          <a className="nav-link text-white" href="http://localhost:8080/scoreboard">Tableau des scores</a>
+          <a className="nav-link text-white" href="http://localhost:8080/element/home">Admin</a>
+        </nav>
+        <div className="background">
+          {this.state.isWaitingToPlay && (
+            <WaitingRoom gameId={this.state.gameId} />
+          )}
+          {this.state.isWaitingForConnection && (
+            <WaitingMessage message={this.waitingForConnectionMessage} />
+          )}
+          {this.state.isJoining && (
+            <GameForm joinFormError={this.state.joinFormError} />
+          )}
+          {this.state.isPlaying && (
+            <GameRoom
+              gameId={this.state.gameId}
+              gameState={this.state.gameState}
+              playerIndex={this.state.playerIndex}
+              playerAnswerIndex={this.state.playerAnswerIndex}
+            />
+          )}
         </div>
-        {this.state.isWaitingToPlay && (
-          <WaitingRoom gameId={this.state.gameId} />
-        )}
-        {this.state.isWaitingForConnection && (
-          <WaitingMessage message={this.waitingForConnectionMessage} />
-        )}
-        {this.state.isJoining && (
-          <GameForm joinFormError={this.state.joinFormError} />
-        )}
-        {this.state.isPlaying && (
-          <GameRoom
-            gameId={this.state.gameId}
-            gameState={this.state.gameState}
-            playerIndex={this.state.playerIndex}
-            playerAnswerIndex={this.state.playerAnswerIndex}
-          />
-        )}
       </div>
     );
   };

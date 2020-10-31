@@ -10,78 +10,79 @@
 </head>
 
 <body>
+<div class="app">
+    <nav class="nav nav-pills bg-secondary p-1">
+        <a class="nav-link text-white" href="/home">Accueil</a>
+        <a class="nav-link text-white" href="/element/home">Admin</a>
+        <a class="nav-link text-white" href="/element/ajouter">Ajouter</a>
+        <a class="nav-link text-white active nav-item" href="/element/liste">Liste des éléments</a>
+    </nav>
+    <div class="background list-table">
+        <h1 class="text-light text-center">Liste des éléments</h1>
+        <table class="table table-hover bg-white">
 
-<div class="row">
-    <div class="col-md-12">
-        <nav class="nav nav-pills bg-secondary p-1">
-            <a class="nav-link text-white" href="/home">Accueil</a>
-            <a class="nav-link text-white" href="/element/home">Admin</a>
-            <a class="nav-link text-white" href="/element/ajouter">Ajouter</a>
-            <a class="nav-link text-white active nav-item" href="/element/liste">Liste des éléments</a>
-        </nav>
+            <thead>
+            <tr>
+                <th>
+                    ID
+                </th>
+                <th>
+                    APERÇU
+                </th>
+                <th>
+                    TEXTE
+                </th>
+                <th>
+                    REPONSE PAR DEFAUT
+                </th>
+                <th>
+                    NOM
+                </th>
+                <th>
+                    TYPE
+                </th>
+                <th>
+                    ACTION
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="element : ${ elements }" class="table-active">
+
+                <td>
+                    [[ ${ element.id } ]]
+                </td>
+                <td>
+                    <img th:if="${ element.type == T(com.github.khornya.useyourwords.model.ElementType).PHOTO }"
+                         class="img-fluid" th:src="${ element.url }" alt="miniature"/>
+                    <video th:if="${ element.type == T(com.github.khornya.useyourwords.model.ElementType).VIDEO }"
+                           class="embed-responsive" th:src="${ element.url }" controls></video>
+                </td>
+                <td>
+                    [[ ${ element.toFillText } ]]
+                </td>
+                <td>
+                    [[ ${ element.defaultResponse } ]]
+                </td>
+                <td>
+                    [[ ${ element.name } ]]
+                </td>
+                <td>
+                    [[ ${ element.type } ]]
+                </td>
+                <td>
+                    <a th:href="@{ element/supprimer/{id}(id=${ element.id }) }"
+                       class="btn btn-primary m-1">Supprimer</a>
+                    <a th:href="@{ element/editer(id=${ element.id }) }" class="btn btn-primary m-1">Editer</a>
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
     </div>
 </div>
-
-<center><h1>Liste des éléments</h1></center>
-<table class="table table-hover">
-
-    <thead>
-    <tr>
-        <th>
-            ID
-        </th>
-        <th>
-            APERÇU
-        </th>
-        <th>
-            TEXTE
-        </th>
-        <th>
-            REPONSE PAR DEFAUT
-        </th>
-        <th>
-            NOM
-        </th>
-        <th>
-            TYPE
-        </th>
-        <th>
-            ACTION
-        </th>
-    </tr>
-    </thead>
-
-    <tbody>
-
-    <tr th:each="element : ${ elements }" class="table-active">
-
-        <td>
-            [[ ${ element.id } ]]
-        </td>
-        <td>
-            <img th:if="${ element.type == T(com.github.khornya.useyourwords.model.ElementType).PHOTO }" class="img-fluid" th:src="${ element.url }"  alt="miniature" />
-            <video th:if="${ element.type == T(com.github.khornya.useyourwords.model.ElementType).VIDEO }" class="embed-responsive" th:src="${ element.url }" controls></video>
-        </td>
-        <td>
-            [[ ${ element.toFillText } ]]
-        </td>
-        <td>
-            [[ ${ element.defaultResponse } ]]
-        </td>
-        <td>
-            [[ ${ element.name } ]]
-        </td>
-        <td>
-            [[ ${ element.type } ]]
-        </td>
-        <td>
-            <a th:href="@{ element/supprimer/{id}(id=${ element.id }) }" class="btn btn-primary m-1">Supprimer</a>
-            <a th:href="@{ element/editer(id=${ element.id }) }" class="btn btn-primary m-1">Editer</a>
-        </td>
-
-    </tr>
-
-    </tbody>
-
-</table>
 </body>
