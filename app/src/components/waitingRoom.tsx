@@ -6,7 +6,7 @@ interface IWaitingRoomProps {
 }
 
 class WaitingRoom extends React.Component<IWaitingRoomProps> {
-    private waitingForPlayersMessage: string = "Please wait while everyone is joining ..."
+    private waitingForPlayersMessage: string = "Veuillez patientez pendant que les autres joueurs rejoignent la partie ..."
 
     render = () => {
         return (
