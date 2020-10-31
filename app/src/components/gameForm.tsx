@@ -1,7 +1,7 @@
 import * as React from "react";
 import $ from "jquery";
-import { stompClient } from "./stompClient";
-import { ICreateMessagePayload } from "./models";
+import { stompClient } from "../services/stompClient";
+import { ICreateMessagePayload } from "../models";
 
 interface IGameFormProps {
   joinFormError: string;

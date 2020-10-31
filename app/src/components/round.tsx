@@ -1,7 +1,7 @@
 import React from "react";
-import { IAnswerMessagePayload, IGameState } from "./models";
+import { IAnswerMessagePayload, IGameState } from "../models";
 import { Timer } from "./timer";
-import { stompClient } from "./stompClient";
+import { stompClient } from "../services/stompClient";
 import $ from "jquery";
 import { VoteForm } from "./voteForm";
 

@@ -1,18 +1,17 @@
 import * as React from "react";
 import "./App.css";
 import Stomp, { Frame } from "stompjs";
-import { stompClient, initStompClient } from "./stompClient";
-import WaitingMessage from "./waitingMessage";
-import GameForm from "./gameForm";
-import WaitingRoom from "./waitingRoom";
-import GameRoom from "./gameRoom";
+import { stompClient, initStompClient } from "./services/stompClient";
+import WaitingMessage from "./components/waitingMessage";
+import GameForm from "./components/gameForm";
+import WaitingRoom from "./components/waitingRoom";
+import GameRoom from "./components/gameRoom";
 import {
   Element,
   IEndRoundMessageContent,
   IHideAnswerMessageContent,
   ITimerMessageContent,
 } from "./models";
-import _ from "lodash-es";
 import {
   IErrorMessageContent,
   IGameRoundMessageContent,
@@ -158,16 +157,16 @@ class App extends React.Component {
           isPlaying: true,
           gameState: {
             ...this.state.gameState,
-            teams: (message.content as IStartMessageContent).teams,
+            teams: (content as IStartMessageContent).teams,
           },
         });
         break;
       case "PLAYER_JOINED":
-        const playerJoinedMessageContent = message.content as IPlayerJoinedMessageContent;
+        const playerJoinedMessageContent = content as IPlayerJoinedMessageContent;
         console.log(`${playerJoinedMessageContent.name} joined the game`);
         break;
       case "NEXT_ROUND":
-        const gameRoundMessageContent = message.content as IGameRoundMessageContent;
+        const gameRoundMessageContent = content as IGameRoundMessageContent;
         this.setState({
           gameState: {
             ...this.state.gameState,
@@ -181,7 +180,7 @@ class App extends React.Component {
         });
         break;
       case "TIMER":
-        const timerMessageContent = message.content as ITimerMessageContent;
+        const timerMessageContent = content as ITimerMessageContent;
         this.setState({
           gameState: {
             ...this.state.gameState,
@@ -191,7 +190,7 @@ class App extends React.Component {
         });
         break;
       case "END_ROUND":
-        const endRoundMessageContent = message.content as IEndRoundMessageContent;
+        const endRoundMessageContent = content as IEndRoundMessageContent;
         this.setState({
           gameState: {
             ...this.state.gameState,
@@ -205,7 +204,7 @@ class App extends React.Component {
         this.setState({
           gameState: {
             ...this.state.gameState,
-            teams: (message.content as IStartMessageContent).teams,
+            teams: (content as IStartMessageContent).teams,
             displayAnswerForm: false,
             displayVoteForm: false,
             displayVoteResult: true,
@@ -216,11 +215,12 @@ class App extends React.Component {
         this.setState({
           gameState: {
             ...this.state.gameState,
-            teams: (message.content as IStartMessageContent).teams,
+            teams: (content as IStartMessageContent).teams,
             displayVoteResult: false,
             gameOver: true,
           },
         });
+        break;
       default:
         console.log(message);
     }

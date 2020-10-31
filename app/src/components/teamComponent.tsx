@@ -1,5 +1,5 @@
 import React from "react";
-import { Team } from "./models"
+import { Team } from "../models"
 import { PlayerComponent } from "./playerComponent";
 
 interface ITeamProps {

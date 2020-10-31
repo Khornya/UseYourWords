@@ -1,9 +1,8 @@
 import * as React from "react";
 import { GameResult } from "./gameResult";
-import { IGameState } from "./models";
+import { IGameState } from "../models";
 import { Round } from "./round";
 import { TeamComponent } from "./teamComponent";
-import { VoteForm } from "./voteForm";
 import { VoteResult } from "./voteResult";
 
 interface IGameRoomProps {

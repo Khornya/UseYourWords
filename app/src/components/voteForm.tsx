@@ -1,5 +1,5 @@
 import React from "react";
-import { stompClient } from "./stompClient";
+import { stompClient } from "../services/stompClient";
 import $ from "jquery";
 
 interface IVoteForm {

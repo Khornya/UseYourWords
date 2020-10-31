@@ -1,7 +1,7 @@
 import React from "react"
-import { Team } from "./models";
+import { Team } from "../models";
 import { TeamComponent } from "./teamComponent";
-import { proxy } from "../package.json"
+import { proxy } from "../../package.json"
 
 interface IGameResultProps {
     teams: Team[]

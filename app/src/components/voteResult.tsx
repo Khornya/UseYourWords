@@ -1,8 +1,6 @@
 import React from "react";
-import { Team } from "./models";
+import { Team } from "../models";
 import { TeamComponent } from "./teamComponent";
-import { Timer } from "./timer";
-import WaitingMessage from "./waitingMessage";
 
 interface IVoteResultProps {
   teams: Team[];
