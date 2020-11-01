@@ -1,7 +1,5 @@
 package com.github.khornya.useyourwords.model;
 
-import org.springframework.web.util.HtmlUtils;
-
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -54,7 +52,7 @@ public class Element {
     }
 
     public void setName(String name) {
-        this.name = HtmlUtils.htmlEscape(name);
+        this.name = name;
     }
 
     public ElementType getType() {
@@ -78,7 +76,7 @@ public class Element {
     }
 
     public void setToFillText(String toFillText) {
-        this.toFillText = HtmlUtils.htmlEscape(toFillText);
+        this.toFillText = toFillText;
     }
 
     public String getUuid() {
@@ -94,6 +92,6 @@ public class Element {
     }
 
     public void setDefaultResponse(String defaultResponse) {
-        this.defaultResponse = HtmlUtils.htmlEscape(defaultResponse);
+        this.defaultResponse = defaultResponse;
     }
 }
