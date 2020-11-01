@@ -1,9 +1,13 @@
 package com.github.khornya.useyourwords.model;
 
+import org.springframework.dao.CannotSerializeTransactionException;
+import org.springframework.web.util.HtmlUtils;
+
 import java.util.ArrayList;
 
 public class Answer {
     private ArrayList<String> answers;
+
     private int playerIndex;
     private ElementType type;
 
@@ -21,6 +25,11 @@ public class Answer {
     }
 
     public void setAnswers(ArrayList<String> answers) {
+
+        for (String answer : answers) {
+            HtmlUtils.htmlEscape(answer);
+        }
+
         this.answers = answers;
     }
 
