@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.github.khornya.useyourwords.dao.IElementRepository;
 import com.github.khornya.useyourwords.exception.ElementNotFoundException;
+import com.github.khornya.useyourwords.exception.InvalidElementException;
 import com.github.khornya.useyourwords.exception.MissingFileException;
 import com.github.khornya.useyourwords.model.Element;
 import com.github.khornya.useyourwords.model.ElementType;
@@ -49,24 +50,41 @@ public class ElementService {
         element.setUuid(elementToEdit.getUuid());
         if (file != null && !file.isEmpty() && element.getType() != ElementType.TEXT) {
             String dossier = "";
-            if (element.getType() == ElementType.PHOTO) {
-                dossier = "Photos";
-            } else if (element.getType() == ElementType.VIDEO) {
-                dossier = "Vidéos";
+            switch (element.getType()) {
+                case PHOTO:
+                    dossier = "Photos";
+                    break;
+                case VIDEO:
+                    dossier = "Vidéos";
+                    break;
             }
             uploadToCloudinary(element, file, dossier);
         } else if (element.getType() != ElementType.TEXT) {
             element.setUrl(elementToEdit.getUrl());
+        } else {
+            String toFillText = element.getToFillText();
+            if (toFillText == null || toFillText.isBlank() || toFillText.isEmpty() || !toFillText.contains("[...]")) {
+                throw new InvalidElementException();
+            }
         }
         return this.daoElement.save(element);
     }
 
     public void add(Element element, MultipartFile file) throws IOException {
         String dossier = "";
-        if (element.getType() == ElementType.PHOTO) {
-            dossier = "Photos";
-        } else if (element.getType() == ElementType.VIDEO) {
-            dossier = "Vidéos";
+        switch (element.getType()) {
+            case TEXT:
+                String toFillText = element.getToFillText();
+                if (toFillText == null || toFillText.isBlank() || toFillText.isEmpty() || !toFillText.contains("[...]")) {
+                    throw new InvalidElementException();
+                }
+                break;
+            case PHOTO:
+                dossier = "Photos";
+                break;
+            case VIDEO:
+                dossier = "Vidéos";
+                break;
         }
         if (element.getUuid() == null) {
             element.setUuid(UUID.randomUUID().toString().replace("-", ""));
@@ -93,6 +111,9 @@ public class ElementService {
 
     public void deleteById(int id) throws IOException {
         Element element = findById(id);
+        if (element == null) {
+            throw new ElementNotFoundException();
+        }
         if (element.getType() == ElementType.PHOTO) {
             cloudinary.uploader().destroy("Photos/" + element.getName() + "_" + element.getUuid(), ObjectUtils.emptyMap());
         } else if (element.getType() == ElementType.VIDEO) {
