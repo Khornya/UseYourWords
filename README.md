@@ -6,7 +6,7 @@
 - NodeJS et npm
 
 ## Installation
-1. Remplacer les identifiants Cloudinary dans le fichier application.properties
+1. Remplacer les identifiants Cloudinary dans le fichier application.properties (src/main/resources)
 2. Remplacer si nécessaire l'url, le login et le mot de passe de connexion à la base de données dans le fichier application.properties
 3. Se rendre dans le dossier app et exécuter la commande `npm install`
 
