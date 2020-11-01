@@ -67,7 +67,7 @@ export class Round extends React.Component<IRoundProps> {
                       type="text"
                       className="form-control"
                       name="response"
-                      placeholder="Type a funny subtitle here"
+                      placeholder="Ecrire un sous-titre drôle..."
                     />
                   )}
                 </div>
@@ -86,7 +86,7 @@ export class Round extends React.Component<IRoundProps> {
                       type="text"
                       className="form-control"
                       name="response"
-                      placeholder="Type a funny subtitle here"
+                      placeholder="Ecrire un sous-titre drôle..."
                     />
                   )}
                 </div>
