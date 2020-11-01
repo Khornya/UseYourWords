@@ -1,5 +1,7 @@
 package com.github.khornya.useyourwords.model;
 
+import com.github.khornya.useyourwords.exception.InvalidPlayerException;
+
 public class Player {
 
 	private String name;
@@ -9,6 +11,9 @@ public class Player {
 	}
 
 	public Player(String name, String sessionId) {
+		if (name == null || name.isEmpty() || name.isBlank()) {
+			throw new InvalidPlayerException();
+		};
 		this.name = name;
 		this.sessionId = sessionId;
 	}
@@ -18,6 +23,9 @@ public class Player {
 	}
 
 	public void setName(String name) {
+		if (name == null || name.isEmpty() || name.isBlank()) {
+			throw new InvalidPlayerException();
+		};
 		this.name = name;
 	}
 

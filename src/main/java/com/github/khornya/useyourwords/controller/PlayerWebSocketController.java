@@ -19,6 +19,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.util.HtmlUtils;
 
 @Controller
 public class PlayerWebSocketController {
@@ -40,7 +41,7 @@ public class PlayerWebSocketController {
 
 	@MessageMapping("/join/{gameId}/{name}")
 	public void join(@Header("simpSessionId") String sessionId, @DestinationVariable(value = "gameId") String gameId, @DestinationVariable(value = "name") String name) {
-		playerService.addPlayer(sessionId, gameId, name);
+		playerService.addPlayer(sessionId, gameId, HtmlUtils.htmlEscape(name));
 	}
 
 	@MessageMapping("/create")
@@ -57,7 +58,7 @@ public class PlayerWebSocketController {
 			return;
 		}
 		gameService.addGame(gameId, game);
-		playerService.addPlayer(sessionId, gameId, message.getName());
+		playerService.addPlayer(sessionId, gameId, HtmlUtils.htmlEscape(message.getName()));
 	}
 
 	@MessageMapping("/ready")

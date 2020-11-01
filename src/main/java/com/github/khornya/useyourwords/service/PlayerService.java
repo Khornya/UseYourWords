@@ -1,5 +1,6 @@
 package com.github.khornya.useyourwords.service;
 
+import com.github.khornya.useyourwords.exception.InvalidPlayerException;
 import com.github.khornya.useyourwords.model.*;
 import com.github.khornya.useyourwords.model.message.Message;
 import com.github.khornya.useyourwords.model.message.game.PlayerJoinedMessageContent;
@@ -36,7 +37,11 @@ public class PlayerService extends WebSocketService {
         logger.info("ADD PLAYER , sessionId: {}, gameId: {}, name: {}", sessionId, gameId, name);
         Game game = gameRepository.getGame(gameId);
         if (game != null && game.getJoinCount().incrementAndGet() <= game.getPlayers().length)
-            addPlayer(new Player(name, sessionId), game);
+            try {
+                addPlayer(new Player(name, sessionId), game);
+            } catch (InvalidPlayerException e) {
+                webSocketService.replyToUser(sessionId, new Message(Message.MessageType.ERROR, new ErrorMessageContent(ErrorCode.JOIN_INVALID_PLAYER_NAME.toString(), "Le nom du joueur est invalide")));
+            }
         else {
             ErrorMessageContent errorMessageContent = new ErrorMessageContent(ErrorCode.JOIN_INVALID_GAMEID.toString(), "Impossible de rejoindre cette partie");
             Message message = new Message(Message.MessageType.ERROR, errorMessageContent);
